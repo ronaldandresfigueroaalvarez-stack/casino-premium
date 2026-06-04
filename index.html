@@ -511,11 +511,68 @@
             displaySaldo.textContent = saldoActual.toFixed(2);
         }
 
-       // --- RULETA ---
+      // --- RULETA ---
         const wheel = document.getElementById('wheel');
         const btnGirarRuleta = document.getElementById('btnGirarRuleta');
         const mensajeRuleta = document.getElementById('mensajeRuleta');
         let gradosActuales = 0;
+
+        if(btnGirarRuleta) {
+            btnGirarRuleta.addEventListener('click', () => {
+                iniciarAudioContext();
+                if (saldoActual < 1.00) { mensajeRuleta.textContent = "❌ Saldo insuficiente."; return; }
+                
+                saldoActual -= 1.00;
+                displaySaldo.textContent = saldoActual.toFixed(2);
+                mensajeRuleta.textContent = "🎡 La ruleta está girando...";
+                playSonido('ruleta');
+
+                // Giro aleatorio de la ruleta
+                const vueltasExtra = Math.floor(Math.random() * 360) + 1440; 
+                gradosActuales += vueltasExtra;
+                wheel.style.transform = `rotate(${gradosActuales}deg)`;
+
+                setTimeout(() => {
+                    // Calculamos el sector (del 0 al 5) de forma limpia
+                    const anguloFinal = (360 - (gradosActuales % 360)) % 360;
+                    const sector = Math.floor(anguloFinal / 60);
+                    
+                    let sonido_a_reproducir = 'perder'; // Variable corregida sin guion de resta
+
+                    // Asignación estricta de premio y mensaje según el sector real
+                    if (sector === 0) {
+                        saldoActual += 2.00;
+                        mensajeRuleta.textContent = "💰 ¡Multiplicador x2! Ganaste $2.00";
+                        sonido_a_reproducir = 'premio';
+                    } else if (sector === 1) {
+                        saldoActual += 0.00; // SECTOR CALAVERA 💀
+                        mensajeRuleta.textContent = "💀 ¡Mala suerte! Sector vacío (x0)";
+                        sonido_a_reproducir = 'perder'; // Sonido de pérdida definitivo
+                    } else if (sector === 2) {
+                        saldoActual += 1.50;
+                        mensajeRuleta.textContent = "💵 ¡Premio menor! Ganaste $1.50";
+                        sonido_a_reproducir = 'premio';
+                    } else if (sector === 3) {
+                        saldoActual += 0.50;
+                        mensajeRuleta.textContent = "✨ ¡Devolución parcial! Recibes $0.50";
+                        sonido_a_reproducir = 'perder'; // Sonido triste porque se pierde la mitad
+                    } else if (sector === 4) {
+                        saldoActual += 5.00;
+                        mensajeRuleta.textContent = "🚀 ¡JACKPOT! Ganaste $5.00";
+                        sonido_a_reproducir = 'premio';
+                        lanzarPapelitos(); 
+                    } else {
+                        saldoActual += 1.00; // SECTOR x1 👍
+                        mensajeRuleta.textContent = "👍 ¡Empate! Recuperas tu $1.00";
+                        sonido_a_reproducir = 'premio'; // Sonido alegre por salvar el dinero
+                    }
+
+                    // Ejecuta el sonido correcto asignado al premio
+                    playSonido(sonido_a_reproducir);
+                    displaySaldo.textContent = saldoActual.toFixed(2);
+                }, 4000);
+            });
+        }
 
         if(btnGirarRuleta) {
             btnGirarRuleta.addEventListener('click', () => {
