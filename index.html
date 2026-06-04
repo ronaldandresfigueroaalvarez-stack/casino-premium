@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Casino Slots & Games Premium</title>
     <style>
         body {
@@ -126,7 +126,7 @@
             animation: spinReel 0.15s linear infinite;
         }
 
-        /* --- ESTILOS DE LA RULETA CON NÚMEROS TEXTUALES --- */
+        /* --- ESTILOS DE LA RULETA --- */
         .wheel-box {
             position: relative;
             width: 280px;
@@ -331,13 +331,13 @@
         </div>
     </div>
 
-    <audio id="sndApostar" src="sonidos/apostar.mp3" preload="auto"></audio>
-    <audio id="sndPremio" src="sonidos/premio.mp3" preload="auto"></audio>
-    <audio id="sndPerder" src="sonidos/perder.mp3" preload="auto"></audio>
-    <audio id="sndRuleta" src="sonidos/ruleta.mp3" preload="auto"></audio>
+    <audio id="sndApostar" src="https://ronaldandresfigueroaalvarez-stack.github.io/casino-premium/sonidos/apostar.mp3" preload="auto"></audio>
+    <audio id="sndPremio" src="https://ronaldandresfigueroaalvarez-stack.github.io/casino-premium/sonidos/premio.mp3" preload="auto"></audio>
+    <audio id="sndPerder" src="https://ronaldandresfigueroaalvarez-stack.github.io/casino-premium/sonidos/perder.mp3" preload="auto"></audio>
+    <audio id="sndRuleta" src="https://ronaldandresfigueroaalvarez-stack.github.io/casino-premium/sonidos/ruleta.mp3" preload="auto"></audio>
 
     <script>
-        // VARIABLES GLOBALES Y AUDIOS
+        // VARIABLES GLOBALES
         let saldoActual = 10.00;
         const displaySaldo = document.getElementById('displaySaldo');
 
@@ -346,19 +346,30 @@
         const sndPerder = document.getElementById('sndPerder');
         const sndRuleta = document.getElementById('sndRuleta');
 
-        // FUNCIÓN DE PAPELITOS CAYENDO (CONFETTI)
-        function lanzarPapelitos() {
-            confetti({
-                particleCount: 150,
-                spread: 80,
-                origin: { y: 0.6 }
-            });
-        }
-
+        // FUNCIÓN DE REPRODUCCIÓN MEJORADA PARA ANDROID
         function reproducirSonido(audioNode) {
             if (audioNode) {
                 audioNode.currentTime = 0;
-                audioNode.play().catch(e => console.log("Interacción requerida para audio"));
+                // Forzamos al navegador móvil a buscar el archivo real fresco
+                audioNode.load(); 
+                
+                let playPromise = audioNode.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Audio bloqueado o esperando interacción: ", error);
+                    });
+                }
+            }
+        }
+
+        // FUNCIÓN DE PAPELITOS CAYENDO (CONFETTI)
+        function lanzarPapelitos() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 150,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
             }
         }
 
@@ -441,7 +452,7 @@
                 saldoActual += premio;
                 mensajeSlots.textContent = `🎉 ¡TRIPLE! Ganaste $${premio.toFixed(2)}`;
                 reproducirSonido(sndPremio);
-                lanzarPapelitos(); // PAPELITOS AL GANAR EL TRIPLE
+                lanzarPapelitos(); 
             } else if (a === b || b === c || a === c) {
                 saldoActual += 1.50;
                 mensajeSlots.textContent = "✨ ¡Doble! Recuperas y ganas $1.50";
@@ -487,7 +498,7 @@
                         saldoActual += 5.00;
                         mensajeRuleta.textContent = "🚀 ¡JACKPOT! Ganaste $5.00";
                         reproducirSonido(sndPremio);
-                        lanzarPapelitos(); // PAPELITOS EN EL JACKPOT
+                        lanzarPapelitos(); 
                     } else if (anguloFinal >= 180 && anguloFinal < 240) {
                         saldoActual += 0.50;
                         mensajeRuleta.textContent = "✨ ¡Devolución parcial! Recibes $0.50";
@@ -602,7 +613,7 @@
             btnRetirarMinas.style.display = 'none';
             revelarTodo();
             reproducirSonido(sndPremio);
-            lanzarPapelitos(); // PAPELITOS AL RETIRARSE DE MINAS
+            lanzarPapelitos(); 
         }
 
         function revelarTodo() {
