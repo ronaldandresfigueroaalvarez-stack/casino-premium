@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino Slots & Games Premium</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Arial Black', Gadget, sans-serif;
+            margin: 0;
+            padding: 20px 10px;
+            background-color: #12021c;
+            background: radial-gradient(circle, #2a083d 0%, #0a0110 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 30px;
+            color: #ffffff;
+            text-shadow: 0 0 10px #ff0077, 0 0 20px #ff0055;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        /* Marcador de Saldo Global */
+        .marcador-saldo {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #00ffcc;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #00ffcc;
+            margin-bottom: 20px;
+        }
+
+        /* Menú de Navegación de Juegos */
+        .menu-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: white;
+            background: #2a1b3d;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(180deg, #00ffcc, #0099ff);
+            color: #000;
+            box-shadow: 0 0 12px rgba(0, 255, 204, 0.6);
+        }
+
+        /* Contenedor Principal */
+        .game-container {
+            background: rgba(20, 10, 35, 0.9);
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 25px 15px;
+            border-radius: 24px;
+            border: 2px solid #3d1e6d;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+
+        /* --- ESTILOS JUEGO 1: MAQUINITA (SLOT) --- */
+        .slot-machine {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            background: #000000;
+            padding: 15px;
+            border-radius: 18px;
+            border: 4px solid #ff0055;
+            box-shadow: inset 0 0 20px rgba(255, 0, 85, 0.6);
+            margin-bottom: 25px;
+        }
+
+        .reel {
+            width: 80px;
+            height: 80px;
+            background: #ffffff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 45px;
+        }
+
+        /* --- ESTILOS JUEGO 2: RULETA --- */
+        .wheel-box {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 25px auto;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 22px solid #ff0055;
+            z-index: 10;
+        }
+
+        .wheel-canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid #ffffff;
+            background: conic-gradient(#ff3333 0deg 60deg, #33bb33 60deg 120deg, #3355ff 120deg 180deg, #f1c40f 180deg 240deg, #ff8800 240deg 300deg, #8e44ad 300deg 360deg);
+            transition: transform 4s cubic-bezier(0.1, 0.8, 0.1, 1);
+        }
+
+        /* --- ESTILOS JUEGO 3: MINAS --- */
+        .mines-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .mine-tile {
+            aspect-ratio: 1;
+            background: #2a1b3d;
+            border: 2px solid #5a2b9a;
+            border-radius: 10px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            color: transparent;
+            transition: 0.2s;
+        }
+
+        .mine-tile.revealed {
+            background: #12021c;
+            color: initial;
+            border-color: #00ffcc;
+        }
+
+        /* Botón de Acción Principal */
+        .btn-play {
+            background: linear-gradient(180deg, #ff0055, #990033);
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 0;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 0, 85, 0.4);
+            width: 85%;
+            margin: 0 auto;
+            display: block;
+        }
+
+        /* Taquilla e Información */
+        .status-msg {
+            color: #ffaa00;
+            font-size: 16px;
+            margin-top: 15px;
+            min-height: 24px;
+        }
+
+        .taquilla {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 2px solid #251342;
+            padding-top: 20px;
+        }
+
+        .btn-taquilla {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #fff;
+        }
+        .btn-deposito { background-color: #28a745; }
+        .btn-retiro { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <h1>CASINO PREMIUM</h1>
+
+    <div class="marcador-saldo">
+        SALDO: $<span id="saldo">10.00</span>
+    </div>
+
+    <div class="menu-tabs">
+        <button id="tabSlot" class="tab-btn active">🎰 Maquinita</button>
+        <button id="tabRuleta" class="tab-btn">🎡 Ruleta</button>
+        <button id="tabMinas" class="tab-btn">💣 Minas</button>
+    </div>
+
+    <div class="game-container">
+        
+        <div id="juegoSlot">
+            <div class="slot-machine">
+                <div id="reel1" class="reel">🍒</div>
+                <div id="reel2" class="reel">👑</div>
+                <div id="reel3" class="reel">💎</div>
+            </div>
+            <button id="btnJugarSlot" class="btn-play">APRESTAR ($1)</button>
+            <h2 id="mensajeSlot" class="status-msg"></h2>
+        </div>
+
+        <div id="juegoRuleta" style="display: none;">
+            <div class="wheel-box">
+                <div class="pointer"></div>
+                <div id="ruleta" class="wheel-canvas"></div>
+            </div>
+            <button id="btnGirarRuleta" class="btn-play" style="background: linear-gradient(180deg, #00ffcc, #0077aa); color: black;">GIRAR RULETA ($1)</button>
+            <h2 id="mensajeRuleta" class="status-msg">¡Prueba tu suerte!</h2>
+        </div>
+
+        <div id="juegoMinas" style="display: none;">
+            <div class="mines-grid" id="minasTablero"></div>
+            <button id="btnIniciarMinas" class="btn-play" style="background: linear-gradient(180deg, #9b51e0, #340766);">INICIAR JUEGO ($1)</button>
+            <button id="btnRetirarMinas" class="btn-play" style="background: #e67e22; display: none; margin-top: 10px;">COBRAR GANANCIAS</button>
+            <h2 id="mensajeMinas" class="status-msg">Evita las bombas ocultas.</h2>
+        </div>
+
+        <div class="taquilla">
+            <button id="btnDepositar" class="btn-taquilla btn-deposito">💰 DEPOSITAR</button>
+            <button id="btnRetirar" class="btn-taquilla btn-retiro">💵 RETIRAR</button>
+        </div>
+    </div>
+
+    <script>
+        let saldoActual = 10.00;
+        const displaySaldo = document.getElementById('saldo');
+
+        // Navegación de pestañas
+        const tabs = {
+            'tabSlot': document.getElementById('juegoSlot'),
+            'tabRuleta': document.getElementById('juegoRuleta'),
+            'tabMinas': document.getElementById('juegoMinas')
+        };
+
+        Object.keys(tabs).forEach(tabId => {
+            document.getElementById(tabId).addEventListener('click', (e) => {
+                Object.keys(tabs).forEach(id => {
+                    document.getElementById(id).classList.remove('active');
+                    tabs[id].style.display = 'none';
+                });
+                e.target.classList.add('active');
+                tabs[tabId].style.display = 'block';
+                resetearMinas();
+            });
+        });
+
+        // LÓGICA JUEGO 1: MAQUINITA
+        const emojis = ['🍒', '🍋', '🍉', '💎', '777', '👑'];
+        const btnJugarSlot = document.getElementById('btnJugarSlot');
+        const mensajeSlot = document.getElementById('mensajeSlot');
+
+        btnJugarSlot.addEventListener('click', () => {
+            if (saldoActual < 1.00) { mensajeSlot.textContent = "❌ Saldo insuficiente."; return; }
+            saldoActual -= 1.00; displaySaldo.textContent = saldoActual.toFixed(2);
+            mensajeSlot.textContent = "🎰 Girando...";
+            let giros = 0;
+            const intervalo = setInterval(() => {
+                document.getElementById('reel1').textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                document.getElementById('reel2').textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                document.getElementById('reel3').textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                if (++giros >= 10) { clearInterval(intervalo); verificarSlot(); }
+            }, 80);
+        });
+
+        function verificarSlot() {
+            const r1 = document.getElementById('reel1').textContent;
+            const r2 = document.getElementById('reel2').textContent;
+            const r3 = document.getElementById('reel3').textContent;
+            if (r1 === r2 && r2 === r3) {
+                let p = r1 === '777' ? 15.0 : (r1 === '👑' ? 10.0 : 5.0);
+                saldoActual += p; mensajeSlot.textContent = `🎉 ¡PREMIO! +$${p.toFixed(2)}`;
+            } else if (r1 === r2 || r2 === r3 || r1 === r3) {
+                saldoActual += 1.50; mensajeSlot.textContent = "✨ ¡Par! Ganaste +$1.50";
+            } else { mensajeSlot.textContent = "📉 Inténtalo de nuevo."; }
+            displaySaldo.textContent = saldoActual.toFixed(2);
+        }
+
+        // LÓGICA JUEGO 2: RULETA
+        const btnGirarRuleta = document.getElementById('btnGirarRuleta');
+        const ruleta = document.getElementById('ruleta');
+        const mensajeRuleta = document.getElementById('mensajeRuleta');
+        let anguloActual = 0;
+        const premiosRuleta = [
+            { n: "💸 Multiplicador x0", p: 0 }, { n: "🎉 ¡Premio! +$3.00", p: 3 },
+            { n: "✨ Multiplicador x1.5! +$1.50", p: 1.5 }, { n: "💵 ¡Duplicaste! +$2.00", p: 2 },
+            { n: "💸 Multiplicador x0", p: 0 }, { n: "👑 ¡PREMIO GORDO! +$5.00", p: 5 }
+        ];
+
+        btnGirarRuleta.addEventListener('click', () => {
+            if (saldoActual < 1.00) { mensajeRuleta.textContent = "❌ Saldo insuficiente."; return; }
+            saldoActual -= 1.00; displaySaldo.textContent = saldoActual.toFixed(2);
+            mensajeRuleta.textContent = "🎡 Girando...";
+            const grados = Math.floor(Math.random() * 360);
+            anguloActual += 1800 + grados;
+            ruleta.style.transform = `rotate(${anguloActual}deg)`;
+            setTimeout(() => {
+                const normalizado = (360 - (anguloActual % 360)) % 360;
+                const sector = Math.floor(normalizado / 60);
+                saldoActual += premiosRuleta[sector].p;
+                displaySaldo.textContent = saldoActual.toFixed(2);
+                mensajeRuleta.textContent = premiosRuleta[sector].n;
+            }, 4000);
+        });
+
+        // LÓGICA JUEGO 3: MINAS (4x4, 3 bombas ocultas)
+        const tablero = document.getElementById('minasTablero');
+        const btnIniciarMinas = document.getElementById('btnIniciarMinas');
+        const btnRetirarMinas = document.getElementById('btnRetirarMinas');
+        const mensajeMinas = document.getElementById('mensajeMinas');
+        let minasMapa = [];
+        let juegoMinasActivo = false;
+        let diamantesEncontrados = 0;
+        let pozoMinas = 0;
+
+        function crearTablero() {
+            tablero.innerHTML = '';
+            for(let i=0; i<16; i++) {
+                const tile = document.createElement('div');
+                tile.classList.add('mine-tile');
+                tile.dataset.index = i;
+                tile.addEventListener('click', tocarCasilla);
+                tablero.appendChild(tile);
+            }
+        }
+
+        btnIniciarMinas.addEventListener('click', () => {
+            if (juegoMinasActivo) return;
+            if (saldoActual < 1.00) { mensajeMinas.textContent = "❌ Saldo insuficiente."; return; }
+            saldoActual -= 1.00; displaySaldo.textContent = saldoActual.toFixed(2);
+            
+            juegoMinasActivo = true;
+            diamantesEncontrados = 0;
+            pozoMinas = 1.00;
+            mensajeMinas.textContent = "💎 ¡Juego Iniciado! Pozo actual: $1.00";
+            btnIniciarMinas.style.display = 'none';
+            btnRetirarMinas.style.display = 'block';
+            
+            // Colocar 3 minas aleatorias en casillas limpias (Corregido)
+            minasMapa = Array(16).fill('💎');
+            let colocadas = 0;
+            while(colocadas < 3) {
+                let idx = Math.floor(Math.random() * 16);
+                if(minasMapa[idx] === '💎') { 
+                    minasMapa[idx] = '💣'; 
+                    colocadas++; 
+                }
+            }
+            crearTablero();
+        });
+
+        function tocarCasilla(e) {
+            if (!juegoMinasActivo) return;
+            const tile = e.target;
+            if (tile.classList.contains('revealed')) return;
+
+            const idx = tile.dataset.index;
+            tile.classList.add('revealed');
+            tile.textContent = minasMapa[idx];
+
+            if (minasMapa[idx] === '💣') {
+                juegoMinasActivo = false;
+                mensajeMinas.textContent = "💥 ¡BOOM! Tocaste una mina. Perdiste.";
+                btnIniciarMinas.style.display = 'block';
+                btnRetirarMinas.style.display = 'none';
+                revelarTodo();
+            } else {
+                diamantesEncontrados++;
+                pozoMinas += 0.40; // Suma dinero por cada acierto
+                mensajeMinas.textContent = `💎 ¡Diamante! Pozo actual: $${pozoMinas.toFixed(2)}`;
+                if(diamantesEncontrados === 13) cobrarMinas();
+            }
+        }
+
+        btnRetirarMinas.addEventListener('click', cobrarMinas);
+
+        function cobrarMinas() {
+            if(!juegoMinasActivo) return;
+            juegoMinasActivo = false;
+            saldoActual += pozoMinas;
+            displaySaldo.textContent = saldoActual.toFixed(2);
+            mensajeMinas.textContent = `💰 ¡Cobraste con éxito! Ganaste $${pozoMinas.toFixed(2)}`;
+            btnIniciarMinas.style.display = 'block';
+            btnRetirarMinas.style.display = 'none';
+            revelarTodo();
+        }
+
+        function revelarTodo() {
+            document.querySelectorAll('.mine-tile').forEach(tile => {
+                tile.classList.add('revealed');
+                tile.textContent = minasMapa[tile.dataset.index];
+            });
+        }
+
+        function resetearMinas() {
+            juegoMinasActivo = false;
+            btnIniciarMinas.style.display = 'block';
+            btnRetirarMinas.style.display = 'none';
+            mensajeMinas.textContent = "Evita las bombas ocultas.";
+            crearTablero();
+        }
+
+        // TAQUILLA
+        document.getElementById('btnDepositar').addEventListener('click', () => {
+            alert("Sistema Automático: Aquí se abrirá la pasarela automática de Pago Móvil / Binance Pay una vez conectado el servidor.");
+        });
+        document.getElementById('btnRetirar').addEventListener('click', () => {
+            alert("Sistema Automático: Aquí podrás ingresar tus datos para cobros inmediatos.");
+        });
+
+        // Inicialización
+        crearTablero();
+    </script>
+</body>
+</html>
