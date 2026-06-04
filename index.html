@@ -251,7 +251,7 @@
                 <div id="slot3" class="slot">💎</div>
             </div>
         </div>
-        <button id="btnApostarSlots" class="btn-action">APRESTAR ($1)</button>
+        <button id="btnApostarSlots" class="btn-action">APOSTAR ($1)</button>
         <div id="mensajeSlots" class="status-msg">¡Prueba tu suerte en los slots!</div>
     </div>
 
@@ -283,24 +283,19 @@
         let saldoActual = 10.00;
         const displaySaldo = document.getElementById('displaySaldo');
 
-        // Efectos de sonido simulados (evitan fallos si no hay archivos cargados)
-        const sndClick = { play: function(){}, currentTime: 0 };
-        const sndPremio = { play: function(){}, currentTime: 0 };
-        const sndBomba = { play: function(){}, currentTime: 0 };
-
         function cambiarJuego(juego) {
             document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
             
             if(juego === 'slots') {
                 document.getElementById('panel-slots').classList.add('active');
-                event.target.classList.add('active');
+                if(window.event && window.event.target) window.event.target.classList.add('active');
             } else if(juego === 'ruleta') {
                 document.getElementById('panel-ruleta').classList.add('active');
-                event.target.classList.add('active');
+                if(window.event && window.event.target) window.event.target.classList.add('active');
             } else if(juego === 'minas') {
                 document.getElementById('panel-minas').classList.add('active');
-                event.target.classList.add('active');
+                if(window.event && window.event.target) window.event.target.classList.add('active');
                 crearTableroInicial();
             }
         }
@@ -312,7 +307,7 @@
 
         function retirarSimulado() {
             if(saldoActual > 0) {
-                alert(`Sistema Automático: Aquí está su dinero. Se cobraron $${saldoActual.toFixed(2)} inmediatamente.`);
+                alert(`Sistema Automático: Aquí está su dinero. Se retiraron $${saldoActual.toFixed(2)} inmediatamente.`);
                 saldoActual = 0;
                 displaySaldo.textContent = saldoActual.toFixed(2);
             }
@@ -323,30 +318,32 @@
         const btnApostarSlots = document.getElementById('btnApostarSlots');
         const mensajeSlots = document.getElementById('mensajeSlots');
 
-        btnApostarSlots.addEventListener('click', () => {
-            if (saldoActual < 1.00) { mensajeSlots.textContent = "❌ Saldo insuficiente."; return; }
-            
-            saldoActual -= 1.00;
-            displaySaldo.textContent = saldoActual.toFixed(2);
-            mensajeSlots.textContent = "🎰 Girando...";
+        if(btnApostarSlots) {
+            btnApostarSlots.addEventListener('click', () => {
+                if (saldoActual < 1.00) { mensajeSlots.textContent = "❌ Saldo insuficiente."; return; }
+                
+                saldoActual -= 1.00;
+                displaySaldo.textContent = saldoActual.toFixed(2);
+                mensajeSlots.textContent = "🎰 Girando...";
 
-            let s1 = document.getElementById('slot1');
-            let s2 = document.getElementById('slot2');
-            let s3 = document.getElementById('slot3');
+                let s1 = document.getElementById('slot1');
+                let s2 = document.getElementById('slot2');
+                let s3 = document.getElementById('slot3');
 
-            let cambios = 0;
-            let intervalo = setInterval(() => {
-                s1.textContent = iconos[Math.floor(Math.random() * iconos.length)];
-                s2.textContent = iconos[Math.floor(Math.random() * iconos.length)];
-                s3.textContent = iconos[Math.floor(Math.random() * iconos.length)];
-                cambios++;
+                let cambios = 0;
+                let intervalo = setInterval(() => {
+                    s1.textContent = iconos[Math.floor(Math.random() * iconos.length)];
+                    s2.textContent = iconos[Math.floor(Math.random() * iconos.length)];
+                    s3.textContent = iconos[Math.floor(Math.random() * iconos.length)];
+                    cambios++;
 
-                if (cambios > 10) {
-                    clearInterval(intervalo);
-                    evaluarResultadoSlots(s1.textContent, s2.textContent, s3.textContent);
-                }
-            }, 100);
-        });
+                    if (cambios > 10) {
+                        clearInterval(intervalo);
+                        evaluarResultadoSlots(s1.textContent, s2.textContent, s3.textContent);
+                    }
+                }, 100);
+            });
+        }
 
         function evaluarResultadoSlots(a, b, c) {
             if (a === b && b === c) {
@@ -369,41 +366,42 @@
         const mensajeRuleta = document.getElementById('mensajeRuleta');
         let gradosActuales = 0;
 
-        btnGirarRuleta.addEventListener('click', () => {
-            if (saldoActual < 1.00) { mensajeRuleta.textContent = "❌ Saldo insuficiente."; return; }
-            
-            saldoActual -= 1.00;
-            displaySaldo.textContent = saldoActual.toFixed(2);
-            mensajeRuleta.textContent = "🎡 La ruleta está girando...";
-
-            const vueltas Extra = Math.floor(Math.random() * 360) + 1440; 
-            gradosActuales += vueltasExtra;
-            wheel.style.transform = `rotate(${gradosActuales}deg)`;
-
-            setTimeout(() => {
-                const anguloFinal = (gradosActuales % 360);
-                // Dividido en 6 sectores de 60 grados cada uno
-                if (anguloFinal >= 0 && anguloFinal < 60) {
-                    saldoActual += 2.00;
-                    mensajeRuleta.textContent = "💰 ¡Multiplicador x2! Ganaste $2.00";
-                } else if (anguloFinal >= 60 && anguloFinal < 120) {
-                    mensajeRuleta.textContent = "💀 ¡Mala suerte! Sector vacío (x0)";
-                } else if (anguloFinal >= 120 && anguloFinal < 180) {
-                    saldoActual += 1.50;
-                    mensajeRuleta.textContent = "💵 ¡Premio menor! Ganaste $1.50";
-                } else if (anguloFinal >= 180 && anguloFinal < 240) {
-                    saldoActual += 0.50;
-                    mensajeRuleta.textContent = "✨ ¡Devolución parcial! Recibes $0.50";
-                } else if (anguloFinal >= 240 && anguloFinal < 300) {
-                    saldoActual += 5.00;
-                    mensajeRuleta.textContent = "🚀 ¡PREMIO MAYOR! Ganaste $5.00";
-                } else {
-                    saldoActual += 1.00;
-                    mensajeRuleta.textContent = "👍 ¡Empate! Recuperas tu $1.00";
-                }
+        if(btnGirarRuleta) {
+            btnGirarRuleta.addEventListener('click', () => {
+                if (saldoActual < 1.00) { mensajeRuleta.textContent = "❌ Saldo insuficiente."; return; }
+                
+                saldoActual -= 1.00;
                 displaySaldo.textContent = saldoActual.toFixed(2);
-            }, 4000);
-        });
+                mensajeRuleta.textContent = "🎡 La ruleta está girando...";
+
+                const vueltasExtra = Math.floor(Math.random() * 360) + 1440; 
+                gradosActuales += vueltasExtra;
+                wheel.style.transform = `rotate(${gradosActuales}deg)`;
+
+                setTimeout(() => {
+                    const anguloFinal = (gradosActuales % 360);
+                    if (anguloFinal >= 0 && anguloFinal < 60) {
+                        saldoActual += 2.00;
+                        mensajeRuleta.textContent = "💰 ¡Multiplicador x2! Ganaste $2.00";
+                    } else if (anguloFinal >= 60 && anguloFinal < 120) {
+                        mensajeRuleta.textContent = "💀 ¡Mala suerte! Sector vacío (x0)";
+                    } else if (anguloFinal >= 120 && anguloFinal < 180) {
+                        saldoActual += 1.50;
+                        mensajeRuleta.textContent = "💵 ¡Premio menor! Ganaste $1.50";
+                    } else if (anguloFinal >= 180 && anguloFinal < 240) {
+                        saldoActual += 0.50;
+                        mensajeRuleta.textContent = "✨ ¡Devolución parcial! Recibes $0.50";
+                    } else if (anguloFinal >= 240 && anguloFinal < 300) {
+                        saldoActual += 5.00;
+                        mensajeRuleta.textContent = "🚀 ¡PREMIO MAYOR! Ganaste $5.00";
+                    } else {
+                        saldoActual += 1.00;
+                        mensajeRuleta.textContent = "👍 ¡Empate! Recuperas tu $1.00";
+                    }
+                    displaySaldo.textContent = saldoActual.toFixed(2);
+                }, 4000);
+            });
+        }
 
         // --- LÓGICA DE MINAS ---
         const tablero = document.getElementById('tablero');
@@ -416,6 +414,7 @@
         let pozoMinas = 0;
 
         function crearTableroInicial() {
+            if(!tablero) return;
             tablero.innerHTML = '';
             for(let i=0; i<16; i++) {
                 const tile = document.createElement('div');
@@ -425,6 +424,7 @@
         }
 
         function crearTablero() {
+            if(!tablero) return;
             tablero.innerHTML = '';
             for(let i=0; i<16; i++) {
                 const tile = document.createElement('div');
@@ -435,31 +435,33 @@
             }
         }
 
-        btnIniciarMinas.addEventListener('click', () => {
-            if (juegoMinasActivo) return;
-            if (saldoActual < 1.00) { mensajeMinas.textContent = "❌ Saldo insuficiente."; return; }
-            
-            saldoActual -= 1.00; 
-            displaySaldo.textContent = saldoActual.toFixed(2);
-            
-            juegoMinasActivo = true;
-            diamantesEncontrados = 0;
-            pozoMinas = 1.00;
-            mensajeMinas.textContent = "💎 ¡Juego Iniciado! Pozo actual: $1.00";
-            btnIniciarMinas.style.display = 'none';
-            btnRetirarMinas.style.display = 'block';
-            
-            minasMapa = Array(16).fill('💎');
-            let colocadas = 0;
-            while(colocadas < 3) {
-                let idx = Math.floor(Math.random() * 16);
-                if(minasMapa[idx] === '💎') { 
-                    minasMapa[idx] = '💣'; 
-                    colocadas++; 
+        if(btnIniciarMinas) {
+            btnIniciarMinas.addEventListener('click', () => {
+                if (juegoMinasActivo) return;
+                if (saldoActual < 1.00) { mensajeMinas.textContent = "❌ Saldo insuficiente."; return; }
+                
+                saldoActual -= 1.00; 
+                displaySaldo.textContent = saldoActual.toFixed(2);
+                
+                juegoMinasActivo = true;
+                diamantesEncontrados = 0;
+                pozoMinas = 1.00;
+                mensajeMinas.textContent = "💎 ¡Juego Iniciado! Pozo actual: $1.00";
+                btnIniciarMinas.style.display = 'none';
+                btnRetirarMinas.style.display = 'block';
+                
+                minasMapa = Array(16).fill('💎');
+                let colocadas = 0;
+                while(colocadas < 3) {
+                    let idx = Math.floor(Math.random() * 16);
+                    if(minasMapa[idx] === '💎') { 
+                        minasMapa[idx] = '💣'; 
+                        colocadas++; 
+                    }
                 }
-            }
-            crearTablero();
-        });
+                crearTablero();
+            });
+        }
 
         function tocarCasilla(e) {
             if (!juegoMinasActivo) return;
@@ -484,7 +486,9 @@
             }
         }
 
-        btnRetirarMinas.addEventListener('click', cobrarMinas);
+        if(btnRetirarMinas) {
+            btnRetirarMinas.addEventListener('click', cobrarMinas);
+        }
 
         function cobrarMinas() {
             if(!juegoMinasActivo) return;
