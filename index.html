@@ -11,127 +11,109 @@
             margin: 0;
             padding: 20px 10px;
             background-color: #12021c;
-            background: radial-gradient(circle, #2a083d 0%, #0a0110 100%);
+            background: radial-gradient(circle, #1a052e 0%, #0d0117 100%);
             color: #ffffff;
             min-height: 100vh;
         }
 
         h1 {
-            font-size: 30px;
+            font-size: 28px;
             color: #ffffff;
-            text-shadow: 0 0 10px #ff0077, 0 0 20px #ff0055;
+            text-shadow: 0 0 10px #ff007f, 0 0 20px #ff0055;
             margin-bottom: 20px;
             letter-spacing: 1px;
         }
 
+        /* Marcador de Saldo Global */
         .marcador-saldo {
             background: rgba(255, 255, 255, 0.05);
             border: 2px solid #00ffcc;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
-            display: inline-block;
             padding: 10px 25px;
-            border-radius: 50px;
+            border-radius: 30px;
+            display: inline-block;
             font-size: 22px;
             font-weight: bold;
             color: #00ffcc;
-            margin-bottom: 20px;
-        }
-
-        .menu-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
             margin-bottom: 25px;
-            flex-wrap: wrap;
         }
 
-        .tab-btn {
-            padding: 10px 15px;
-            font-size: 14px;
-            font-weight: bold;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-            color: white;
-            background: #2a1b3d;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(180deg, #00ffcc, #0099ff);
-            color: #000;
-            box-shadow: 0 0 12px rgba(0, 255, 204, 0.6);
-        }
-
-        .game-container {
-            background: rgba(20, 10, 35, 0.9);
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 25px 15px;
-            border-radius: 24px;
-            border: 2px solid #3d1e6d;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-        }
-
-        /* --- MAQUINITA (SLOT) ANIMADA --- */
-        .slot-machine {
+        /* Pestañas de Navegación */
+        .tabs {
             display: flex;
             justify-content: center;
             gap: 10px;
-            background: #000000;
-            padding: 15px;
-            border-radius: 18px;
-            border: 4px solid #ff0055;
-            box-shadow: inset 0 0 20px rgba(255, 0, 85, 0.6);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+        }
+        .tab-button {
+            background: #25143a;
+            border: 1px solid #4a2d6d;
+            color: #bbb;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .tab-button.active {
+            background: #00c6ff;
+            color: #000;
+            box-shadow: 0 0 15px #00c6ff;
+            border-color: #00c6ff;
         }
 
-        .reel-container {
+        /* Contenedores de cada Juego */
+        .game-panel {
+            display: none;
+            max-width: 400px;
+            margin: 0 auto;
+            background: rgba(20, 5, 35, 0.85);
+            border: 2px solid #3d1b63;
+            border-radius: 20px;
+            padding: 25px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+        .game-panel.active {
+            display: block;
+        }
+
+        /* --- ESTILOS DE MAQUINITA (SLOTS) --- */
+        .slot-container {
+            border: 3px solid #ff0055;
+            box-shadow: inset 0 0 20px rgba(255,0,85,0.5), 0 0 15px rgba(255,0,85,0.3);
+            border-radius: 15px;
+            padding: 20px;
+            background: #090111;
+            margin-bottom: 25px;
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .slot {
             width: 80px;
             height: 80px;
             background: #ffffff;
             border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .reel {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .reel-item {
-            width: 100%;
-            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 45px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
-        @keyframes spinReel {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-800px); }
-        }
-
-        /* --- RULETA MEJORADA CON TEXTO --- */
+        /* --- ESTILOS DE LA RULETA --- */
         .wheel-box {
             position: relative;
             width: 260px;
             height: 260px;
             margin: 0 auto 25px auto;
         }
-
         .pointer {
             position: absolute;
-            top: -15px;
+            top: -5px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
@@ -141,321 +123,290 @@
             border-top: 25px solid #ff0055;
             z-index: 10;
         }
-
-        #ruletaCanvas {
+        .wheel {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 5px solid #ffffff;
-            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+            border: 5px solid #fff;
+            background: conic-gradient(
+                #ff3366 0deg 60deg,
+                #33cc66 60deg 120deg,
+                #3366ff 120deg 180deg,
+                #ffcc33 180deg 240deg,
+                #ff9933 240deg 300deg,
+                #9933ff 300deg 360deg
+            );
             transition: transform 4s cubic-bezier(0.1, 0.8, 0.1, 1);
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
         }
 
-        /* --- MINAS --- */
-        .mines-grid {
+        /* --- ESTILOS DE MINAS --- */
+        .grid-minas {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin: 20px auto;
+            max-width: 300px;
         }
-
         .mine-tile {
             aspect-ratio: 1;
-            background: #2a1b3d;
-            border: 2px solid #5a2b9a;
-            border-radius: 10px;
-            font-size: 24px;
+            background: #2a163d;
+            border: 2px solid #4a2b6d;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 24px;
             cursor: pointer;
-            font-weight: bold;
-            color: transparent;
-            transition: 0.2s;
+            transition: all 0.2s;
         }
-
-        .mine-tile.revealed {
-            background: #12021c;
-            color: initial;
+        .mine-tile:hover {
+            background: #391e54;
             border-color: #00ffcc;
         }
+        .mine-tile.revealed {
+            background: #11051c;
+            border-color: #222;
+            cursor: default;
+        }
 
-        .btn-play {
-            background: linear-gradient(180deg, #ff0055, #990033);
-            color: #ffffff;
+        /* Botones de Acción Generales */
+        .btn-action {
+            width: 100%;
+            background: linear-gradient(135deg, #ff0055 0%, #d6004b 100%);
+            border: none;
+            color: white;
+            padding: 14px;
             font-size: 18px;
             font-weight: bold;
-            padding: 12px 0;
-            border-radius: 50px;
-            border: none;
+            border-radius: 25px;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(255, 0, 85, 0.4);
-            width: 85%;
-            margin: 0 auto;
-            display: block;
+            transition: all 0.2s;
+            font-family: 'Arial Black', Gadget, sans-serif;
+        }
+        .btn-action:active {
+            transform: scale(0.98);
+        }
+        .btn-spin {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+            color: #000;
+        }
+        .btn-safe {
+            background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+            box-shadow: 0 5px 15px rgba(0, 176, 155, 0.4);
         }
 
+        /* Panel de Estado / Mensajes */
         .status-msg {
-            color: #ffaa00;
-            font-size: 16px;
             margin-top: 15px;
-            min-height: 24px;
+            font-size: 15px;
+            min-height: 20px;
+            color: #ffcc00;
         }
 
-        .taquilla {
+        /* Cajero (Depositar / Retirar) */
+        .cajero-box {
             margin-top: 25px;
-            display: flex;
-            justify-content: space-around;
-            border-top: 2px solid #251342;
+            border-top: 1px solid #2d1744;
             padding-top: 20px;
+            display: flex;
+            gap: 15px;
         }
-
-        .btn-taquilla {
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: bold;
-            border: none;
+        .btn-cajero {
+            flex: 1;
+            padding: 10px;
             border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            font-size: 14px;
             cursor: pointer;
-            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
-        .btn-deposito { background-color: #28a745; }
-        .btn-retiro { background-color: #dc3545; }
+        .btn-deposit { background: #28a745; color: white; }
+        .btn-withdraw { background: #dc3545; color: white; }
     </style>
 </head>
 <body>
 
     <h1>CASINO PREMIUM</h1>
 
-    <div class="marcador-saldo">
-        SALDO: $<span id="saldo">10.00</span>
+    <div class="marcador-saldo">SALDO: $<span id="displaySaldo">10.00</span></div>
+
+    <div class="tabs">
+        <button class="tab-button active" onclick="cambiarJuego('slots')">🎰 Maquinita</button>
+        <button class="tab-button" onclick="cambiarJuego('ruleta')">🎡 Ruleta</button>
+        <button class="tab-button" onclick="cambiarJuego('minas')">💣 Minas</button>
     </div>
 
-    <div class="menu-tabs">
-        <button id="tabSlot" class="tab-btn active">🎰 Maquinita</button>
-        <button id="tabRuleta" class="tab-btn">🎡 Ruleta</button>
-        <button id="tabMinas" class="tab-btn">💣 Minas</button>
+    <div id="panel-slots" class="game-panel active">
+        <div class="slot-container">
+            <div class="row">
+                <div id="slot1" class="slot">🍒</div>
+                <div id="slot2" class="slot">👑</div>
+                <div id="slot3" class="slot">💎</div>
+            </div>
+        </div>
+        <button id="btnApostarSlots" class="btn-action">APRESTAR ($1)</button>
+        <div id="mensajeSlots" class="status-msg">¡Prueba tu suerte en los slots!</div>
     </div>
 
-    <div class="game-container">
-        
-        <!-- MAQUINITA -->
-        <div id="juegoSlot">
-            <div class="slot-machine">
-                <div class="reel-container"><div id="reel1" class="reel"></div></div>
-                <div class="reel-container"><div id="reel2" class="reel"></div></div>
-                <div class="reel-container"><div id="reel3" class="reel"></div></div>
-            </div>
-            <button id="btnJugarSlot" class="btn-play">APRESTAR ($1)</button>
-            <h2 id="mensajeSlot" class="status-msg"></h2>
+    <div id="panel-ruleta" class="game-panel">
+        <div class="wheel-box">
+            <div class="pointer"></div>
+            <div id="wheel" class="wheel"></div>
         </div>
+        <button id="btnGirarRuleta" class="btn-action btn-spin">GIRAR RULETA ($1)</button>
+        <div id="mensajeRuleta" class="status-msg">¡Prueba tu suerte!</div>
+    </div>
 
-        <!-- RULETA MODIFICADA A CANVAS -->
-        <div id="juegoRuleta" style="display: none;">
-            <div class="wheel-box">
-                <div class="pointer"></div>
-                <canvas id="ruletaCanvas" width="300" height="300"></canvas>
-            </div>
-            <button id="btnGirarRuleta" class="btn-play" style="background: linear-gradient(180deg, #00ffcc, #0077aa); color: black;">GIRAR RULETA ($1)</button>
-            <h2 id="mensajeRuleta" class="status-msg">¡Prueba tu suerte!</h2>
-        </div>
+    <div id="panel-minas" class="game-panel">
+        <div id="tablero" class="grid-minas"></div>
+        <button id="btnIniciarMinas" class="btn-action">INICIAR JUEGO ($1)</button>
+        <button id="btnRetirarMinas" class="btn-action btn-safe" style="display:none;">RETIRAR GANANCIAS</button>
+        <div id="mensajeMinas" class="status-msg">Configuración: 3 Minas ocultas.</div>
+    </div>
 
-        <!-- MINAS -->
-        <div id="juegoMinas" style="display: none;">
-            <div class="mines-grid" id="minasTablero"></div>
-            <button id="btnIniciarMinas" class="btn-play" style="background: linear-gradient(180deg, #9b51e0, #340766);">INICIAR JUEGO ($1)</button>
-            <button id="btnRetirarMinas" class="btn-play" style="background: #e67e22; display: none; margin-top: 10px;">COBRAR GANANCIAS</button>
-            <h2 id="mensajeMinas" class="status-msg">Evita las bombas ocultas.</h2>
-        </div>
-
-        <div class="taquilla">
-            <button id="btnDepositar" class="btn-taquilla btn-deposito">💰 DEPOSITAR</button>
-            <button id="btnRetirar" class="btn-taquilla btn-retiro">💵 RETIRAR</button>
+    <div style="max-width:400px; margin:0 auto;">
+        <div class="cajero-box">
+            <button class="btn-cajero btn-deposit" onclick="depositarSimulado()">💰 DEPOSITAR</button>
+            <button class="btn-cajero btn-withdraw" onclick="retirarSimulado()">💵 RETIRAR</button>
         </div>
     </div>
 
     <script>
+        // --- LOGICA GLOBAL Y SALDO ---
         let saldoActual = 10.00;
-        const displaySaldo = document.getElementById('saldo');
+        const displaySaldo = document.getElementById('displaySaldo');
 
-        // EFECTOS DE SONIDO (Rutas públicas estables de internet)
-        const sndClick = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav');
-        const sndGiro = new Audio('https://assets.mixkit.co/active_storage/sfx/2034/2034-84.wav');
-        const sndPremio = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav');
-        const sndBomba = new Audio('https://assets.mixkit.co/active_storage/sfx/1653/1653-84.wav');
+        // Efectos de sonido simulados (evitan fallos si no hay archivos cargados)
+        const sndClick = { play: function(){}, currentTime: 0 };
+        const sndPremio = { play: function(){}, currentTime: 0 };
+        const sndBomba = { play: function(){}, currentTime: 0 };
 
-        sndGiro.loop = true;
-
-        // Desbloquear audio para iOS/Android al primer toque
-        document.addEventListener('click', () => {
-            sndClick.play().catch(()=>{}); sndClick.pause();
-            sndGiro.play().catch(()=>{}); sndGiro.pause();
-            sndPremio.play().catch(()=>{}); sndPremio.pause();
-            sndBomba.play().catch(()=>{}); sndBomba.pause();
-        }, { once: true });
-
-        // Navegación de pestañas
-        const tabs = {
-            'tabSlot': document.getElementById('juegoSlot'),
-            'tabRuleta': document.getElementById('juegoRuleta'),
-            'tabMinas': document.getElementById('juegoMinas')
-        };
-
-        Object.keys(tabs).forEach(tabId => {
-            document.getElementById(tabId).addEventListener('click', (e) => {
-                sndClick.currentTime = 0; sndClick.play().catch(()=>{});
-                Object.keys(tabs).forEach(id => {
-                    document.getElementById(id).classList.remove('active');
-                    tabs[id].style.display = 'none';
-                });
-                e.target.classList.add('active');
-                tabs[tabId].style.display = 'block';
-                if(tabId === 'tabRuleta') dibujarRuleta();
-                resetearMinas();
-            });
-        });
-
-        // --- LÓGICA JUEGO 1: MAQUINITA (CON GIROS VISUALES) ---
-        const emojis = ['🍒', '🍋', '🍉', '💎', '777', '👑'];
-        const btnJugarSlot = document.getElementById('btnJugarSlot');
-        const mensajeSlot = document.getElementById('mensajeSlot');
-
-        function inicializarRodillos() {
-            for(let r=1; r<=3; r++) {
-                const container = document.getElementById(`reel${r}`);
-                container.innerHTML = '';
-                // Crear una tira vertical de 15 emojis mezclados para la animación
-                for(let i=0; i<15; i++) {
-                    const item = document.createElement('div');
-                    item.classList.add('reel-item');
-                    item.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-                    container.appendChild(item);
-                }
+        function cambiarJuego(juego) {
+            document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+            
+            if(juego === 'slots') {
+                document.getElementById('panel-slots').classList.add('active');
+                event.target.classList.add('active');
+            } else if(juego === 'ruleta') {
+                document.getElementById('panel-ruleta').classList.add('active');
+                event.target.classList.add('active');
+            } else if(juego === 'minas') {
+                document.getElementById('panel-minas').classList.add('active');
+                event.target.classList.add('active');
+                crearTableroInicial();
             }
         }
 
-        btnJugarSlot.addEventListener('click', () => {
-            if (saldoActual < 1.00) { mensajeSlot.textContent = "❌ Saldo insuficiente."; return; }
-            saldoActual -= 1.00; displaySaldo.textContent = saldoActual.toFixed(2);
-            mensajeSlot.textContent = "🎰 ¡Rodando la suerte!";
-            btnJugarSlot.disabled = true;
+        function depositarSimulado() {
+            saldoActual += 10.00;
+            displaySaldo.textContent = saldoActual.toFixed(2);
+        }
 
-            sndGiro.currentTime = 0; sndGiro.play().catch(()=>{});
-
-            // Aplicar animación CSS de giro a cada rodillo de forma escalonada
-            for(let r=1; r<=3; r++) {
-                const el = document.getElementById(`reel${r}`);
-                el.style.animation = 'none';
-                el.offsetHeight; // Forzar reinicio de animación
-                el.style.animation = `spinReel ${1 + (r * 0.4)}s cubic-bezier(0.1, 0.8, 0.1, 1) forwards`;
+        function retirarSimulado() {
+            if(saldoActual > 0) {
+                alert(`Sistema Automático: Aquí está su dinero. Se cobraron $${saldoActual.toFixed(2)} inmediatamente.`);
+                saldoActual = 0;
+                displaySaldo.textContent = saldoActual.toFixed(2);
             }
+        }
 
-            setTimeout(() => {
-                sndGiro.pause();
-                btnJugarSlot.disabled = false;
-                verificarSlot();
-            }, 2200);
+        // --- LÓGICA DE MAQUINITA ---
+        const iconos = ['🍒', '🍋', '🍉', '💎', '👑', '⭐'];
+        const btnApostarSlots = document.getElementById('btnApostarSlots');
+        const mensajeSlots = document.getElementById('mensajeSlots');
+
+        btnApostarSlots.addEventListener('click', () => {
+            if (saldoActual < 1.00) { mensajeSlots.textContent = "❌ Saldo insuficiente."; return; }
+            
+            saldoActual -= 1.00;
+            displaySaldo.textContent = saldoActual.toFixed(2);
+            mensajeSlots.textContent = "🎰 Girando...";
+
+            let s1 = document.getElementById('slot1');
+            let s2 = document.getElementById('slot2');
+            let s3 = document.getElementById('slot3');
+
+            let cambios = 0;
+            let intervalo = setInterval(() => {
+                s1.textContent = iconos[Math.floor(Math.random() * iconos.length)];
+                s2.textContent = iconos[Math.floor(Math.random() * iconos.length)];
+                s3.textContent = iconos[Math.floor(Math.random() * iconos.length)];
+                cambios++;
+
+                if (cambios > 10) {
+                    clearInterval(intervalo);
+                    evaluarResultadoSlots(s1.textContent, s2.textContent, s3.textContent);
+                }
+            }, 100);
         });
 
-        function verificarSlot() {
-            // Analizar los elementos que se detuvieron al frente
-            const r1 = document.querySelector('#reel1 .reel-item:nth-child(1)').textContent;
-            const r2 = document.querySelector('#reel2 .reel-item:nth-child(1)').textContent;
-            const r3 = document.querySelector('#reel3 .reel-item:nth-child(1)').textContent;
-
-            if (r1 === r2 && r2 === r3) {
-                let p = r1 === '777' ? 15.0 : (r1 === '👑' ? 10.0 : 5.0);
-                saldoActual += p; 
-                mensajeSlot.textContent = `🎉 ¡TRIPLE PREMIO! +$${p.toFixed(2)}`;
-                sndPremio.currentTime = 0; sndPremio.play().catch(()=>{});
-            } else if (r1 === r2 || r2 === r3 || r1 === r3) {
-                saldoActual += 1.50; 
-                mensajeSlot.textContent = "✨ ¡Un Par! Ganaste +$1.50";
-                sndPremio.currentTime = 0; sndPremio.play().catch(()=>{});
-            } else { 
-                mensajeSlot.textContent = "📉 Inténtalo de nuevo."; 
+        function evaluarResultadoSlots(a, b, c) {
+            if (a === b && b === c) {
+                let premio = 5.00;
+                if(a === '💎' || a === '👑') premio = 10.00;
+                saldoActual += premio;
+                mensajeSlots.textContent = `🎉 ¡TRIPLE! Ganaste $${premio.toFixed(2)}`;
+            } else if (a === b || b === c || a === c) {
+                saldoActual += 1.50;
+                mensajeSlots.textContent = "✨ ¡Doble! Recuperas y ganas $1.50";
+            } else {
+                mensajeSlots.textContent = "❌ Suerte para la próxima.";
             }
             displaySaldo.textContent = saldoActual.toFixed(2);
-            inicializarRodillos(); // Prepara la siguiente tanda
         }
 
-        // --- LÓGICA JUEGO 2: RULETA CON CANVAS (TEXTO INTEGRADO) ---
-        const canvas = document.getElementById('ruletaCanvas');
-        const ctx = canvas.getContext('2d');
+        // --- LÓGICA DE LA RULETA ---
+        const wheel = document.getElementById('wheel');
         const btnGirarRuleta = document.getElementById('btnGirarRuleta');
         const mensajeRuleta = document.getElementById('mensajeRuleta');
-        let anguloActual = 0;
-
-        const premiosRuleta = [
-            { n: "X0", p: 0, c: "#ff3333" }, 
-            { n: "+$3.00", p: 3, c: "#33bb33" },
-            { n: "x1.5", p: 1.5, c: "#3355ff" }, 
-            { n: "x2.0", p: 2, c: "#f1c40f" },
-            { n: "X0", p: 0, c: "#ff8800" }, 
-            { n: "PREMIO G.", p: 5, c: "#8e44ad" }
-        ];
-
-        function dibujarRuleta() {
-            const numSectores = premiosRuleta.length;
-            const arco = (2 * Math.PI) / numSectores;
-            ctx.clearRect(0, 0, 300, 300);
-
-            premiosRuleta.forEach((premio, i) => {
-                const anguloSector = i * arco;
-                ctx.fillStyle = premio.c;
-                ctx.beginPath();
-                ctx.moveTo(150, 150);
-                ctx.arc(150, 150, 145, anguloSector, anguloSector + arco);
-                ctx.lineTo(150, 150);
-                ctx.fill();
-
-                // Escribir los textos centrados de cada sector
-                ctx.save();
-                ctx.fillStyle = "#fff";
-                ctx.font = "bold 14px Arial";
-                ctx.translate(150, 150);
-                ctx.rotate(anguloSector + arco / 2);
-                ctx.textAlign = "right";
-                ctx.fillText(premio.n, 130, 5);
-                ctx.restore();
-            });
-        }
+        let gradosActuales = 0;
 
         btnGirarRuleta.addEventListener('click', () => {
             if (saldoActual < 1.00) { mensajeRuleta.textContent = "❌ Saldo insuficiente."; return; }
-            saldoActual -= 1.00; displaySaldo.textContent = saldoActual.toFixed(2);
-            mensajeRuleta.textContent = "🎡 La ruleta está corriendo...";
-            btnGirarRuleta.disabled = true;
+            
+            saldoActual -= 1.00;
+            displaySaldo.textContent = saldoActual.toFixed(2);
+            mensajeRuleta.textContent = "🎡 La ruleta está girando...";
 
-            sndGiro.currentTime = 0; sndGiro.play().catch(()=>{});
-
-            const gradosAleatorios = Math.floor(Math.random() * 360);
-            anguloActual += 1800 + gradosAleatorios;
-            canvas.style.transform = `rotate(${anguloActual}deg)`;
+            const vueltas Extra = Math.floor(Math.random() * 360) + 1440; 
+            gradosActuales += vueltasExtra;
+            wheel.style.transform = `rotate(${gradosActuales}deg)`;
 
             setTimeout(() => {
-                sndGiro.pause();
-                btnGirarRuleta.disabled = false;
-                
-                // Calcular qué premio cayó apuntando hacia arriba (270 grados en el círculo trigonométrico)
-                const normalizado = (360 - (anguloActual % 360)) % 360;
-                const sector = Math.floor(((normalizado + 270) % 360) / 60);
-                const itemGanado = premiosRuleta[sector];
-                
-                saldoActual += itemGanado.p;
-                displaySaldo.textContent = saldoActual.toFixed(2);
-                
-                if (itemGanado.p > 0) {
-                    mensajeRuleta.textContent = `🎉 ¡Ganaste ${itemGanado.n}!`;
-                    sndPremio.currentTime = 0; sndPremio.play().catch(()=>{});
+                const anguloFinal = (gradosActuales % 360);
+                // Dividido en 6 sectores de 60 grados cada uno
+                if (anguloFinal >= 0 && anguloFinal < 60) {
+                    saldoActual += 2.00;
+                    mensajeRuleta.textContent = "💰 ¡Multiplicador x2! Ganaste $2.00";
+                } else if (anguloFinal >= 60 && anguloFinal < 120) {
+                    mensajeRuleta.textContent = "💀 ¡Mala suerte! Sector vacío (x0)";
+                } else if (anguloFinal >= 120 && anguloFinal < 180) {
+                    saldoActual += 1.50;
+                    mensajeRuleta.textContent = "💵 ¡Premio menor! Ganaste $1.50";
+                } else if (anguloFinal >= 180 && anguloFinal < 240) {
+                    saldoActual += 0.50;
+                    mensajeRuleta.textContent = "✨ ¡Devolución parcial! Recibes $0.50";
+                } else if (anguloFinal >= 240 && anguloFinal < 300) {
+                    saldoActual += 5.00;
+                    mensajeRuleta.textContent = "🚀 ¡PREMIO MAYOR! Ganaste $5.00";
                 } else {
-                    mensajeRuleta.textContent = "💸 Multiplicador x0. ¡Suerte la próxima!";
+                    saldoActual += 1.00;
+                    mensajeRuleta.textContent = "👍 ¡Empate! Recuperas tu $1.00";
                 }
+                displaySaldo.textContent = saldoActual.toFixed(2);
             }, 4000);
         });
 
-        // --- LÓGICA JUEGO 3: MINAS ---
-        const tablero = document.getElementById('minasTablero');
+        // --- LÓGICA DE MINAS ---
+        const tablero = document.getElementById('tablero');
         const btnIniciarMinas = document.getElementById('btnIniciarMinas');
         const btnRetirarMinas = document.getElementById('btnRetirarMinas');
         const mensajeMinas = document.getElementById('mensajeMinas');
@@ -463,6 +414,15 @@
         let juegoMinasActivo = false;
         let diamantesEncontrados = 0;
         let pozoMinas = 0;
+
+        function crearTableroInicial() {
+            tablero.innerHTML = '';
+            for(let i=0; i<16; i++) {
+                const tile = document.createElement('div');
+                tile.classList.add('mine-tile');
+                tablero.appendChild(tile);
+            }
+        }
 
         function crearTablero() {
             tablero.innerHTML = '';
@@ -478,8 +438,9 @@
         btnIniciarMinas.addEventListener('click', () => {
             if (juegoMinasActivo) return;
             if (saldoActual < 1.00) { mensajeMinas.textContent = "❌ Saldo insuficiente."; return; }
-            saldoActual -= 1.00; displaySaldo.textContent = saldoActual.toFixed(2);
-            sndClick.currentTime = 0; sndClick.play().catch(()=>{});
+            
+            saldoActual -= 1.00; 
+            displaySaldo.textContent = saldoActual.toFixed(2);
             
             juegoMinasActivo = true;
             diamantesEncontrados = 0;
@@ -514,13 +475,11 @@
                 mensajeMinas.textContent = "💥 ¡BOOM! Tocaste una mina. Perdiste.";
                 btnIniciarMinas.style.display = 'block';
                 btnRetirarMinas.style.display = 'none';
-                sndBomba.currentTime = 0; sndBomba.play().catch(()=>{});
                 revelarTodo();
             } else {
                 diamantesEncontrados++;
                 pozoMinas += 0.40;
                 mensajeMinas.textContent = `💎 ¡Diamante! Pozo actual: $${pozoMinas.toFixed(2)}`;
-                sndPremio.currentTime = 0; sndPremio.play().catch(()=>{});
                 if(diamantesEncontrados === 13) cobrarMinas();
             }
         }
@@ -535,4 +494,17 @@
             mensajeMinas.textContent = `💰 ¡Cobraste con éxito! Ganaste $${pozoMinas.toFixed(2)}`;
             btnIniciarMinas.style.display = 'block';
             btnRetirarMinas.style.display = 'none';
-            sndPremio
+            revelarTodo();
+        }
+
+        function revelarTodo() {
+            const tiles = document.querySelectorAll('.mine-tile');
+            tiles.forEach(tile => {
+                const idx = tile.dataset.index;
+                tile.classList.add('revealed');
+                tile.textContent = minasMapa[idx];
+            });
+        }
+    </script>
+</body>
+</html>
