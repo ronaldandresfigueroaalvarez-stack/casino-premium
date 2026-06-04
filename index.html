@@ -324,51 +324,93 @@
         </div>
     </div>
 
-    <audio id="sndApostar" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav" preload="auto"></audio>
-    <audio id="sndPremio" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav" preload="auto"></audio>
-    <audio id="sndPerder" src="https://assets.mixkit.co/active_storage/sfx/1393/1393-84.wav" preload="auto"></audio>
-    <audio id="sndRuleta" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-84.wav" preload="auto"></audio>
-
     <script>
         let saldoActual = 10.00;
         const displaySaldo = document.getElementById('displaySaldo');
 
-        const sndApostar = document.getElementById('sndApostar');
-        const sndPremio = document.getElementById('sndPremio');
-        const sndPerder = document.getElementById('sndPerder');
-        const sndRuleta = document.getElementById('sndRuleta');
+        // MOTOR DE AUDIO SINTETIZADO (Sintoniza frecuencias por código)
+        let audioCtx = null;
 
-        let audiosDesbloqueados = false;
-
-        // Activa el audio en celulares tras el primer toque a la pantalla
-        function desbloquearAudios() {
-            if (audiosDesbloqueados) return;
-            const sonidos = [sndApostar, sndPremio, sndPerder, sndRuleta];
-            sonidos.forEach(sonido => {
-                if (sonido) {
-                    sonido.muted = false;
-                    sonido.play().then(() => {
-                        sonido.pause();
-                        sonido.currentTime = 0;
-                    }).catch(e => console.log("Desbloqueando...", e));
-                }
-            });
-            audiosDesbloqueados = true;
-        }
-
-        document.addEventListener('click', desbloquearAudios);
-        document.addEventListener('touchstart', desbloquearAudios);
-
-        function reproducirSonido(audioNode) {
-            if (audioNode) {
-                audioNode.currentTime = 0;
-                audioNode.muted = false;
-                let playPromise = audioNode.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => console.log("Error de reproducción:", error));
-                }
+        function iniciarAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
             }
         }
+
+        function playSonido(tipo) {
+            iniciarAudioContext();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+            
+            if (tipo === 'apostar') {
+                // Sonido tipo "Blip" rápido ascendente
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(600, now + 0.15);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            } 
+            else if (tipo === 'ruleta') {
+                // Sonido repetitivo de tic-tic de ruleta
+                for (let i = 0; i < 15; i++) {
+                    let timeOffset = i * 0.12;
+                    let osc = audioCtx.createOscillator();
+                    let gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800 - (i * 20), now + timeOffset);
+                    gain.gain.setValueAtTime(0.1, now + timeOffset);
+                    gain.gain.linearRampToValueAtTime(0.01, now + timeOffset + 0.05);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + timeOffset);
+                    osc.stop(now + timeOffset + 0.05);
+                }
+            } 
+            else if (tipo === 'premio') {
+                // Arpegio triunfal de casino alegre (Do - Mi - Sol - Do)
+                const notas = [523.25, 659.25, 783.99, 1046.50];
+                notas.forEach((freq, index) => {
+                    let osc = audioCtx.createOscillator();
+                    let gain = audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(freq, now + (index * 0.1));
+                    gain.gain.setValueAtTime(0.1, now + (index * 0.1));
+                    gain.gain.linearRampToValueAtTime(0.01, now + (index * 0.1) + 0.3);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + (index * 0.1));
+                    osc.stop(now + (index * 0.1) + 0.3);
+                });
+            } 
+            else if (tipo === 'perder') {
+                // Sonido descendente triste de derrota
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.linearRampToValueAtTime(100, now + 0.4);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            }
+        }
+
+        // Desbloqueadores universales al tocar la pantalla
+        document.addEventListener('click', iniciarAudioContext);
+        document.addEventListener('touchstart', iniciarAudioContext);
 
         function lanzarPapelitos() {
             if (typeof confetti === 'function') {
@@ -377,7 +419,7 @@
         }
 
         function cambiarJuego(juego) {
-            desbloquearAudios();
+            iniciarAudioContext();
             document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
             
@@ -397,7 +439,7 @@
         function depositarSimulado() {
             saldoActual += 10.00;
             displaySaldo.textContent = saldoActual.toFixed(2);
-            reproducirSonido(sndPremio);
+            playSonido('premio');
         }
 
         function retirarSimulado() {
@@ -405,7 +447,7 @@
                 alert(`Retiro exitoso: Se procesaron $${saldoActual.toFixed(2)}`);
                 saldoActual = 0;
                 displaySaldo.textContent = saldoActual.toFixed(2);
-                reproducirSonido(sndPerder);
+                playSonido('perder');
             }
         }
 
@@ -416,13 +458,13 @@
 
         if(btnApostarSlots) {
             btnApostarSlots.addEventListener('click', () => {
-                desbloquearAudios();
+                iniciarAudioContext();
                 if (saldoActual < 1.00) { mensajeSlots.textContent = "❌ Saldo insuficiente."; return; }
                 
                 saldoActual -= 1.00;
                 displaySaldo.textContent = saldoActual.toFixed(2);
                 mensajeSlots.textContent = "🎰 Girando rodillos...";
-                reproducirSonido(sndApostar);
+                playSonido('apostar');
 
                 const r1 = document.getElementById('reel1');
                 const r2 = document.getElementById('reel2');
@@ -456,15 +498,15 @@
                 if(a === '💎' || a === '👑') premio = 10.00;
                 saldoActual += premio;
                 mensajeSlots.textContent = `🎉 ¡TRIPLE! Ganaste $${premio.toFixed(2)}`;
-                reproducirSonido(sndPremio);
+                playSonido('premio');
                 lanzarPapelitos(); 
             } else if (a === b || b === c || a === c) {
                 saldoActual += 1.50;
                 mensajeSlots.textContent = "✨ ¡Doble! Recuperas y ganas $1.50";
-                reproducirSonido(sndPremio);
+                playSonido('premio');
             } else {
                 mensajeSlots.textContent = "❌ Suerte para la próxima.";
-                reproducirSonido(sndPerder);
+                playSonido('perder');
             }
             displaySaldo.textContent = saldoActual.toFixed(2);
         }
@@ -477,13 +519,13 @@
 
         if(btnGirarRuleta) {
             btnGirarRuleta.addEventListener('click', () => {
-                desbloquearAudios();
+                iniciarAudioContext();
                 if (saldoActual < 1.00) { mensajeRuleta.textContent = "❌ Saldo insuficiente."; return; }
                 
                 saldoActual -= 1.00;
                 displaySaldo.textContent = saldoActual.toFixed(2);
                 mensajeRuleta.textContent = "🎡 La ruleta está girando...";
-                reproducirSonido(sndRuleta);
+                playSonido('ruleta');
 
                 const vueltasExtra = Math.floor(Math.random() * 360) + 1440; 
                 gradosActuales += vueltasExtra;
@@ -495,27 +537,27 @@
                     if (anguloFinal >= 0 && anguloFinal < 60) {
                         saldoActual += 2.00;
                         mensajeRuleta.textContent = "💰 ¡Multiplicador x2! Ganaste $2.00";
-                        reproducirSonido(sndPremio);
+                        playSonido('premio');
                     } else if (anguloFinal >= 60 && anguloFinal < 120) {
                         saldoActual += 1.00;
                         mensajeRuleta.textContent = "👍 ¡Empate! Recuperas tu $1.00";
-                        reproducirSonido(sndPremio);
+                        playSonido('premio');
                     } else if (anguloFinal >= 120 && anguloFinal < 180) {
                         saldoActual += 5.00;
                         mensajeRuleta.textContent = "🚀 ¡JACKPOT! Ganaste $5.00";
-                        reproducirSonido(sndPremio);
+                        playSonido('premio');
                         lanzarPapelitos(); 
                     } else if (anguloFinal >= 180 && anguloFinal < 240) {
                         saldoActual += 0.50;
                         mensajeRuleta.textContent = "✨ ¡Devolución parcial! Recibes $0.50";
-                        reproducirSonido(sndPremio);
+                        playSonido('premio');
                     } else if (anguloFinal >= 240 && anguloFinal < 300) {
                         saldoActual += 1.50;
                         mensajeRuleta.textContent = "💵 ¡Premio menor! Ganaste $1.50";
-                        reproducirSonido(sndPremio);
+                        playSonido('premio');
                     } else {
                         mensajeRuleta.textContent = "💀 ¡Mala suerte! Sector vacío (x0)";
-                        reproducirSonido(sndPerder);
+                        playSonido('perder');
                     }
                     displaySaldo.textContent = saldoActual.toFixed(2);
                 }, 4000);
@@ -556,13 +598,13 @@
 
         if(btnIniciarMinas) {
             btnIniciarMinas.addEventListener('click', () => {
-                desbloquearAudios();
+                iniciarAudioContext();
                 if (juegoMinasActivo) return;
                 if (saldoActual < 1.00) { mensajeMinas.textContent = "❌ Saldo insuficiente."; return; }
                 
                 saldoActual -= 1.00; 
                 displaySaldo.textContent = saldoActual.toFixed(2);
-                reproducirSonido(sndApostar);
+                playSonido('apostar');
                 
                 juegoMinasActivo = true;
                 diamantesEncontrados = 0;
@@ -596,12 +638,12 @@
                 btnIniciarMinas.style.display = 'block';
                 btnRetirarMinas.style.display = 'none';
                 revelarTodo();
-                reproducirSonido(sndPerder);
+                playSonido('perder');
             } else {
                 diamantesEncontrados++;
                 pozoMinas += 0.40;
                 mensajeMinas.textContent = `💎 ¡Diamante! Pozo actual: $${pozoMinas.toFixed(2)}`;
-                reproducirSonido(sndPremio);
+                playSonido('premio');
                 if(diamantesEncontrados === 13) cobrarMinas();
             }
         }
@@ -619,7 +661,7 @@
             btnIniciarMinas.style.display = 'block';
             btnRetirarMinas.style.display = 'none';
             revelarTodo();
-            reproducirSonido(sndPremio);
+            playSonido('premio');
             lanzarPapelitos(); 
         }
 
