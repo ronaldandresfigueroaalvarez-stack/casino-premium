@@ -78,7 +78,7 @@
             display: block;
         }
 
-        /* --- ESTILOS DE MAQUINITA (SLOTS) CON GIRO VERTICAL --- */
+        /* --- ESTILOS DE MAQUINITA (SLOTS) --- */
         .slot-container {
             border: 3px solid #ff0055;
             box-shadow: inset 0 0 20px rgba(255,0,85,0.5), 0 0 15px rgba(255,0,85,0.3);
@@ -331,10 +331,10 @@
         </div>
     </div>
 
-    <audio id="sndApostar" src="https://ronaldandresfigueroaalvarez-stack.github.io/casino-premium/sonidos/apostar.mp3" preload="auto"></audio>
-    <audio id="sndPremio" src="https://ronaldandresfigueroaalvarez-stack.github.io/casino-premium/sonidos/premio.mp3" preload="auto"></audio>
-    <audio id="sndPerder" src="https://ronaldandresfigueroaalvarez-stack.github.io/casino-premium/sonidos/perder.mp3" preload="auto"></audio>
-    <audio id="sndRuleta" src="https://ronaldandresfigueroaalvarez-stack.github.io/casino-premium/sonidos/ruleta.mp3" preload="auto"></audio>
+    <audio id="sndApostar" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav" preload="auto"></audio>
+    <audio id="sndPremio" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav" preload="auto"></audio>
+    <audio id="sndPerder" src="https://assets.mixkit.co/active_storage/sfx/1393/1393-84.wav" preload="auto"></audio>
+    <audio id="sndRuleta" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-84.wav" preload="auto"></audio>
 
     <script>
         // VARIABLES GLOBALES
@@ -346,17 +346,14 @@
         const sndPerder = document.getElementById('sndPerder');
         const sndRuleta = document.getElementById('sndRuleta');
 
-        // FUNCIÓN DE REPRODUCCIÓN MEJORADA PARA ANDROID
+        // REPRODUCCIÓN COMPATIBLE CON MÓVILES
         function reproducirSonido(audioNode) {
             if (audioNode) {
                 audioNode.currentTime = 0;
-                // Forzamos al navegador móvil a buscar el archivo real fresco
-                audioNode.load(); 
-                
                 let playPromise = audioNode.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(error => {
-                        console.log("Audio bloqueado o esperando interacción: ", error);
+                        console.log("Audio esperando interacción del usuario:", error);
                     });
                 }
             }
