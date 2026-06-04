@@ -92,7 +92,6 @@
             justify-content: center;
             gap: 15px;
         }
-        /* Contenedor individual con máscara para ocultar lo que desborda */
         .slot-window {
             width: 80px;
             height: 80px;
@@ -102,7 +101,6 @@
             position: relative;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
-        /* Tira interna que se moverá verticalmente */
         .slot-reel {
             position: absolute;
             top: 0;
@@ -120,10 +118,9 @@
             font-size: 45px;
             box-sizing: border-box;
         }
-        /* Animación de giro rápido continuo */
         @keyframes spinReel {
             0% { transform: translateY(0); }
-            100% { transform: translateY(-400px); } /* Mueve 5 iconos de distancia */
+            100% { transform: translateY(-400px); }
         }
         .spinning {
             animation: spinReel 0.15s linear infinite;
@@ -166,7 +163,6 @@
             transition: transform 4s cubic-bezier(0.1, 0.8, 0.1, 1);
             box-shadow: 0 0 20px rgba(255,255,255,0.2);
         }
-        /* Etiquetas de los premios dentro de la ruleta */
         .wheel-label {
             position: absolute;
             width: 100px;
@@ -185,7 +181,6 @@
             align-items: center;
             line-height: 1.1;
         }
-        /* Rotaciones precisas centradas en cada una de las 6 porciones (cada 60 grados) */
         .label1 { transform: rotate(30deg); }
         .label2 { transform: rotate(90deg); }
         .label3 { transform: rotate(150deg); }
@@ -238,9 +233,7 @@
             transition: all 0.2s;
             font-family: 'Arial Black', Gadget, sans-serif;
         }
-        .btn-action:active {
-            transform: scale(0.98);
-        }
+        .btn-action:active { transform: scale(0.98); }
         .btn-spin {
             background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
             box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
@@ -251,7 +244,6 @@
             box-shadow: 0 5px 15px rgba(0, 176, 155, 0.4);
         }
 
-        /* Panel de Estado / Mensajes */
         .status-msg {
             margin-top: 15px;
             font-size: 15px;
@@ -259,7 +251,6 @@
             color: #ffcc00;
         }
 
-        /* Cajero (Depositar / Retirar) */
         .cajero-box {
             margin-top: 25px;
             border-top: 1px solid #2d1744;
@@ -283,6 +274,8 @@
         .btn-deposit { background: #28a745; color: white; }
         .btn-withdraw { background: #dc3545; color: white; }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
@@ -291,29 +284,17 @@
     <div class="marcador-saldo">SALDO: $<span id="displaySaldo">10.00</span></div>
 
     <div class="tabs">
-        <button class="tab-button active" onclick="cambiarJuego('slots')">🎰 Maquinita</button>
-        <button class="tab-button" onclick="cambiarJuego('ruleta')">🎡 Ruleta</button>
-        <button class="tab-button" onclick="cambiarJuego('minas')">💣 Minas</button>
+        <button id="tabSlots" class="tab-button active" onclick="cambiarJuego('slots')">🎰 Maquinita</button>
+        <button id="tabRuleta" class="tab-button" onclick="cambiarJuego('ruleta')">🎡 Ruleta</button>
+        <button id="tabMinas" class="tab-button" onclick="cambiarJuego('minas')">💣 Minas</button>
     </div>
 
     <div id="panel-slots" class="game-panel active">
         <div class="slot-container">
             <div class="row">
-                <div class="slot-window">
-                    <div id="reel1" class="slot-reel">
-                        <div class="slot-icon">🍒</div>
-                    </div>
-                </div>
-                <div class="slot-window">
-                    <div id="reel2" class="slot-reel">
-                        <div class="slot-icon">👑</div>
-                    </div>
-                </div>
-                <div class="slot-window">
-                    <div id="reel3" class="slot-reel">
-                        <div class="slot-icon">💎</div>
-                    </div>
-                </div>
+                <div class="slot-window"><div id="reel1" class="slot-reel"><div class="slot-icon">🍒</div></div></div>
+                <div class="slot-window"><div id="reel2" class="slot-reel"><div class="slot-icon">👑</div></div></div>
+                <div class="slot-window"><div id="reel3" class="slot-reel"><div class="slot-icon">💎</div></div></div>
             </div>
         </div>
         <button id="btnApostarSlots" class="btn-action">APOSTAR ($1)</button>
@@ -350,10 +331,36 @@
         </div>
     </div>
 
+    <audio id="sndApostar" src="sonidos/apostar.mp3" preload="auto"></audio>
+    <audio id="sndPremio" src="sonidos/premio.mp3" preload="auto"></audio>
+    <audio id="sndPerder" src="sonidos/perder.mp3" preload="auto"></audio>
+    <audio id="sndRuleta" src="sonidos/ruleta.mp3" preload="auto"></audio>
+
     <script>
-        // --- LOGICA GLOBAL Y SALDO ---
+        // VARIABLES GLOBALES Y AUDIOS
         let saldoActual = 10.00;
         const displaySaldo = document.getElementById('displaySaldo');
+
+        const sndApostar = document.getElementById('sndApostar');
+        const sndPremio = document.getElementById('sndPremio');
+        const sndPerder = document.getElementById('sndPerder');
+        const sndRuleta = document.getElementById('sndRuleta');
+
+        // FUNCIÓN DE PAPELITOS CAYENDO (CONFETTI)
+        function lanzarPapelitos() {
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function reproducirSonido(audioNode) {
+            if (audioNode) {
+                audioNode.currentTime = 0;
+                audioNode.play().catch(e => console.log("Interacción requerida para audio"));
+            }
+        }
 
         function cambiarJuego(juego) {
             document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
@@ -361,13 +368,13 @@
             
             if(juego === 'slots') {
                 document.getElementById('panel-slots').classList.add('active');
-                if(window.event && window.event.target) window.event.target.classList.add('active');
+                document.getElementById('tabSlots').classList.add('active');
             } else if(juego === 'ruleta') {
                 document.getElementById('panel-ruleta').classList.add('active');
-                if(window.event && window.event.target) window.event.target.classList.add('active');
+                document.getElementById('tabRuleta').classList.add('active');
             } else if(juego === 'minas') {
                 document.getElementById('panel-minas').classList.add('active');
-                if(window.event && window.event.target) window.event.target.classList.add('active');
+                document.getElementById('tabMinas').classList.add('active');
                 crearTableroInicial();
             }
         }
@@ -375,17 +382,19 @@
         function depositarSimulado() {
             saldoActual += 10.00;
             displaySaldo.textContent = saldoActual.toFixed(2);
+            reproducirSonido(sndPremio);
         }
 
         function retirarSimulado() {
             if(saldoActual > 0) {
-                alert(`Sistema Automático: Aquí está su dinero. Se retiraron $${saldoActual.toFixed(2)} inmediatamente.`);
+                alert(`Retiro exitoso: Se procesaron $${saldoActual.toFixed(2)}`);
                 saldoActual = 0;
                 displaySaldo.textContent = saldoActual.toFixed(2);
+                reproducirSonido(sndPerder);
             }
         }
 
-        // --- LÓGICA DE MAQUINITA (CON GIRO VISUAL REALISTA) ---
+        // --- LÓGICA DE MAQUINITA ---
         const iconos = ['🍒', '🍋', '🍉', '💎', '👑', '⭐'];
         const btnApostarSlots = document.getElementById('btnApostarSlots');
         const mensajeSlots = document.getElementById('mensajeSlots');
@@ -397,15 +406,14 @@
                 saldoActual -= 1.00;
                 displaySaldo.textContent = saldoActual.toFixed(2);
                 mensajeSlots.textContent = "🎰 Girando rodillos...";
+                reproducirSonido(sndApostar);
 
                 const r1 = document.getElementById('reel1');
                 const r2 = document.getElementById('reel2');
                 const r3 = document.getElementById('reel3');
 
-                // Llenamos las tiras con múltiples iconos aleatorios para simular el desplazamiento continuo
                 [r1, r2, r3].forEach(reel => {
                     reel.innerHTML = '';
-                    // Generamos 6 iconos seguidos para que pasen a toda velocidad
                     for(let i=0; i<6; i++) {
                         const iconDiv = document.createElement('div');
                         iconDiv.classList.add('slot-icon');
@@ -415,24 +423,12 @@
                     reel.classList.add('spinning');
                 });
 
-                // Detener los rodillos de manera secuencial (efecto casino clásico)
                 let finalIcons = [];
-                
-                setTimeout(() => {
-                    r1.classList.remove('spinning');
-                    finalIcons[0] = r1.children[0].textContent;
-                }, 1000);
-
-                setTimeout(() => {
-                    r2.classList.remove('spinning');
-                    finalIcons[1] = r2.children[0].textContent;
-                }, 1400);
-
+                setTimeout(() => { r1.classList.remove('spinning'); finalIcons[0] = r1.children[0].textContent; }, 1000);
+                setTimeout(() => { r2.classList.remove('spinning'); finalIcons[1] = r2.children[0].textContent; }, 1400);
                 setTimeout(() => {
                     r3.classList.remove('spinning');
                     finalIcons[2] = r3.children[0].textContent;
-                    
-                    // Cuando se detiene el último, evaluamos de inmediato
                     evaluarResultadoSlots(finalIcons[0], finalIcons[1], finalIcons[2]);
                 }, 1800);
             });
@@ -444,16 +440,20 @@
                 if(a === '💎' || a === '👑') premio = 10.00;
                 saldoActual += premio;
                 mensajeSlots.textContent = `🎉 ¡TRIPLE! Ganaste $${premio.toFixed(2)}`;
+                reproducirSonido(sndPremio);
+                lanzarPapelitos(); // PAPELITOS AL GANAR EL TRIPLE
             } else if (a === b || b === c || a === c) {
                 saldoActual += 1.50;
                 mensajeSlots.textContent = "✨ ¡Doble! Recuperas y ganas $1.50";
+                reproducirSonido(sndPremio);
             } else {
                 mensajeSlots.textContent = "❌ Suerte para la próxima.";
+                reproducirSonido(sndPerder);
             }
             displaySaldo.textContent = saldoActual.toFixed(2);
         }
 
-        // --- LÓGICA DE LA RULETA (ALINEADA CON SUS TEXTOS) ---
+        // --- LÓGICA DE LA RULETA ---
         const wheel = document.getElementById('wheel');
         const btnGirarRuleta = document.getElementById('btnGirarRuleta');
         const mensajeRuleta = document.getElementById('mensajeRuleta');
@@ -466,34 +466,39 @@
                 saldoActual -= 1.00;
                 displaySaldo.textContent = saldoActual.toFixed(2);
                 mensajeRuleta.textContent = "🎡 La ruleta está girando...";
+                reproducirSonido(sndRuleta);
 
-                // Generar giros y sumar a los grados acumulados
                 const vueltasExtra = Math.floor(Math.random() * 360) + 1440; 
                 gradosActuales += vueltasExtra;
                 wheel.style.transform = `rotate(${gradosActuales}deg)`;
 
                 setTimeout(() => {
-                    // Calculamos qué porción cayó apuntando arriba (teniendo en cuenta la rotación acumulada en sentido horario)
-                    // El puntero está fijo arriba (0 grados). El cálculo mapea exactamente los sectores visuales creados.
                     const anguloFinal = (360 - (gradosActuales % 360)) % 360;
                     
                     if (anguloFinal >= 0 && anguloFinal < 60) {
                         saldoActual += 2.00;
                         mensajeRuleta.textContent = "💰 ¡Multiplicador x2! Ganaste $2.00";
+                        reproducirSonido(sndPremio);
                     } else if (anguloFinal >= 60 && anguloFinal < 120) {
                         saldoActual += 1.00;
                         mensajeRuleta.textContent = "👍 ¡Empate! Recuperas tu $1.00";
+                        reproducirSonido(sndPremio);
                     } else if (anguloFinal >= 120 && anguloFinal < 180) {
                         saldoActual += 5.00;
-                        mensajeRuleta.textContent = "🚀 ¡PREMIO MAYOR! Ganaste $5.00";
+                        mensajeRuleta.textContent = "🚀 ¡JACKPOT! Ganaste $5.00";
+                        reproducirSonido(sndPremio);
+                        lanzarPapelitos(); // PAPELITOS EN EL JACKPOT
                     } else if (anguloFinal >= 180 && anguloFinal < 240) {
                         saldoActual += 0.50;
                         mensajeRuleta.textContent = "✨ ¡Devolución parcial! Recibes $0.50";
+                        reproducirSonido(sndPremio);
                     } else if (anguloFinal >= 240 && anguloFinal < 300) {
                         saldoActual += 1.50;
                         mensajeRuleta.textContent = "💵 ¡Premio menor! Ganaste $1.50";
+                        reproducirSonido(sndPremio);
                     } else {
                         mensajeRuleta.textContent = "💀 ¡Mala suerte! Sector vacío (x0)";
+                        reproducirSonido(sndPerder);
                     }
                     displaySaldo.textContent = saldoActual.toFixed(2);
                 }, 4000);
@@ -539,6 +544,7 @@
                 
                 saldoActual -= 1.00; 
                 displaySaldo.textContent = saldoActual.toFixed(2);
+                reproducirSonido(sndApostar);
                 
                 juegoMinasActivo = true;
                 diamantesEncontrados = 0;
@@ -551,10 +557,7 @@
                 let colocadas = 0;
                 while(colocadas < 3) {
                     let idx = Math.floor(Math.random() * 16);
-                    if(minasMapa[idx] === '💎') { 
-                        minasMapa[idx] = '💣'; 
-                        colocadas++; 
-                    }
+                    if(minasMapa[idx] === '💎') { minasMapa[idx] = '💣'; colocadas++; }
                 }
                 crearTablero();
             });
@@ -575,10 +578,12 @@
                 btnIniciarMinas.style.display = 'block';
                 btnRetirarMinas.style.display = 'none';
                 revelarTodo();
+                reproducirSonido(sndPerder);
             } else {
                 diamantesEncontrados++;
                 pozoMinas += 0.40;
                 mensajeMinas.textContent = `💎 ¡Diamante! Pozo actual: $${pozoMinas.toFixed(2)}`;
+                reproducirSonido(sndPremio);
                 if(diamantesEncontrados === 13) cobrarMinas();
             }
         }
@@ -596,6 +601,8 @@
             btnIniciarMinas.style.display = 'block';
             btnRetirarMinas.style.display = 'none';
             revelarTodo();
+            reproducirSonido(sndPremio);
+            lanzarPapelitos(); // PAPELITOS AL RETIRARSE DE MINAS
         }
 
         function revelarTodo() {
