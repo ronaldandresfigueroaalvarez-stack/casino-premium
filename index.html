@@ -78,7 +78,7 @@
             display: block;
         }
 
-        /* --- ESTILOS DE MAQUINITA (SLOTS) --- */
+        /* --- ESTILOS DE MAQUINITA (SLOTS) CON GIRO VERTICAL --- */
         .slot-container {
             border: 3px solid #ff0055;
             box-shadow: inset 0 0 20px rgba(255,0,85,0.5), 0 0 15px rgba(255,0,85,0.3);
@@ -92,28 +92,53 @@
             justify-content: center;
             gap: 15px;
         }
-        .slot {
+        /* Contenedor individual con máscara para ocultar lo que desborda */
+        .slot-window {
             width: 80px;
             height: 80px;
             background: #ffffff;
             border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        /* Tira interna que se moverá verticalmente */
+        .slot-reel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .slot-icon {
+            width: 80px;
+            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 45px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
+        /* Animación de giro rápido continuo */
+        @keyframes spinReel {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-400px); } /* Mueve 5 iconos de distancia */
+        }
+        .spinning {
+            animation: spinReel 0.15s linear infinite;
         }
 
-        /* --- ESTILOS DE LA RULETA --- */
+        /* --- ESTILOS DE LA RULETA CON NÚMEROS TEXTUALES --- */
         .wheel-box {
             position: relative;
-            width: 260px;
-            height: 260px;
+            width: 280px;
+            height: 280px;
             margin: 0 auto 25px auto;
         }
         .pointer {
             position: absolute;
-            top: -5px;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
@@ -127,7 +152,9 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 5px solid #fff;
+            border: 6px solid #fff;
+            position: relative;
+            overflow: hidden;
             background: conic-gradient(
                 #ff3366 0deg 60deg,
                 #33cc66 60deg 120deg,
@@ -139,6 +166,32 @@
             transition: transform 4s cubic-bezier(0.1, 0.8, 0.1, 1);
             box-shadow: 0 0 20px rgba(255,255,255,0.2);
         }
+        /* Etiquetas de los premios dentro de la ruleta */
+        .wheel-label {
+            position: absolute;
+            width: 100px;
+            height: 40px;
+            left: calc(50% - 50px);
+            top: 10px;
+            transform-origin: center 130px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            line-height: 1.1;
+        }
+        /* Rotaciones precisas centradas en cada una de las 6 porciones (cada 60 grados) */
+        .label1 { transform: rotate(30deg); }
+        .label2 { transform: rotate(90deg); }
+        .label3 { transform: rotate(150deg); }
+        .label4 { transform: rotate(210deg); }
+        .label5 { transform: rotate(270deg); }
+        .label6 { transform: rotate(330deg); }
 
         /* --- ESTILOS DE MINAS --- */
         .grid-minas {
@@ -246,9 +299,21 @@
     <div id="panel-slots" class="game-panel active">
         <div class="slot-container">
             <div class="row">
-                <div id="slot1" class="slot">🍒</div>
-                <div id="slot2" class="slot">👑</div>
-                <div id="slot3" class="slot">💎</div>
+                <div class="slot-window">
+                    <div id="reel1" class="slot-reel">
+                        <div class="slot-icon">🍒</div>
+                    </div>
+                </div>
+                <div class="slot-window">
+                    <div id="reel2" class="slot-reel">
+                        <div class="slot-icon">👑</div>
+                    </div>
+                </div>
+                <div class="slot-window">
+                    <div id="reel3" class="slot-reel">
+                        <div class="slot-icon">💎</div>
+                    </div>
+                </div>
             </div>
         </div>
         <button id="btnApostarSlots" class="btn-action">APOSTAR ($1)</button>
@@ -258,7 +323,14 @@
     <div id="panel-ruleta" class="game-panel">
         <div class="wheel-box">
             <div class="pointer"></div>
-            <div id="wheel" class="wheel"></div>
+            <div id="wheel" class="wheel">
+                <div class="wheel-label label1"><span>x2</span><span>💰</span></div>
+                <div class="wheel-label label2"><span>0</span><span>💀</span></div>
+                <div class="wheel-label label3"><span>x1.5</span><span>💵</span></div>
+                <div class="wheel-label label4"><span>x0.5</span><span>✨</span></div>
+                <div class="wheel-label label5"><span>JACKPOT</span><span>🚀</span></div>
+                <div class="wheel-label label6"><span>x1</span><span>👍</span></div>
+            </div>
         </div>
         <button id="btnGirarRuleta" class="btn-action btn-spin">GIRAR RULETA ($1)</button>
         <div id="mensajeRuleta" class="status-msg">¡Prueba tu suerte!</div>
@@ -313,7 +385,7 @@
             }
         }
 
-        // --- LÓGICA DE MAQUINITA ---
+        // --- LÓGICA DE MAQUINITA (CON GIRO VISUAL REALISTA) ---
         const iconos = ['🍒', '🍋', '🍉', '💎', '👑', '⭐'];
         const btnApostarSlots = document.getElementById('btnApostarSlots');
         const mensajeSlots = document.getElementById('mensajeSlots');
@@ -324,24 +396,45 @@
                 
                 saldoActual -= 1.00;
                 displaySaldo.textContent = saldoActual.toFixed(2);
-                mensajeSlots.textContent = "🎰 Girando...";
+                mensajeSlots.textContent = "🎰 Girando rodillos...";
 
-                let s1 = document.getElementById('slot1');
-                let s2 = document.getElementById('slot2');
-                let s3 = document.getElementById('slot3');
+                const r1 = document.getElementById('reel1');
+                const r2 = document.getElementById('reel2');
+                const r3 = document.getElementById('reel3');
 
-                let cambios = 0;
-                let intervalo = setInterval(() => {
-                    s1.textContent = iconos[Math.floor(Math.random() * iconos.length)];
-                    s2.textContent = iconos[Math.floor(Math.random() * iconos.length)];
-                    s3.textContent = iconos[Math.floor(Math.random() * iconos.length)];
-                    cambios++;
-
-                    if (cambios > 10) {
-                        clearInterval(intervalo);
-                        evaluarResultadoSlots(s1.textContent, s2.textContent, s3.textContent);
+                // Llenamos las tiras con múltiples iconos aleatorios para simular el desplazamiento continuo
+                [r1, r2, r3].forEach(reel => {
+                    reel.innerHTML = '';
+                    // Generamos 6 iconos seguidos para que pasen a toda velocidad
+                    for(let i=0; i<6; i++) {
+                        const iconDiv = document.createElement('div');
+                        iconDiv.classList.add('slot-icon');
+                        iconDiv.textContent = iconos[Math.floor(Math.random() * iconos.length)];
+                        reel.appendChild(iconDiv);
                     }
-                }, 100);
+                    reel.classList.add('spinning');
+                });
+
+                // Detener los rodillos de manera secuencial (efecto casino clásico)
+                let finalIcons = [];
+                
+                setTimeout(() => {
+                    r1.classList.remove('spinning');
+                    finalIcons[0] = r1.children[0].textContent;
+                }, 1000);
+
+                setTimeout(() => {
+                    r2.classList.remove('spinning');
+                    finalIcons[1] = r2.children[0].textContent;
+                }, 1400);
+
+                setTimeout(() => {
+                    r3.classList.remove('spinning');
+                    finalIcons[2] = r3.children[0].textContent;
+                    
+                    // Cuando se detiene el último, evaluamos de inmediato
+                    evaluarResultadoSlots(finalIcons[0], finalIcons[1], finalIcons[2]);
+                }, 1800);
             });
         }
 
@@ -360,7 +453,7 @@
             displaySaldo.textContent = saldoActual.toFixed(2);
         }
 
-        // --- LÓGICA DE LA RULETA ---
+        // --- LÓGICA DE LA RULETA (ALINEADA CON SUS TEXTOS) ---
         const wheel = document.getElementById('wheel');
         const btnGirarRuleta = document.getElementById('btnGirarRuleta');
         const mensajeRuleta = document.getElementById('mensajeRuleta');
@@ -374,29 +467,33 @@
                 displaySaldo.textContent = saldoActual.toFixed(2);
                 mensajeRuleta.textContent = "🎡 La ruleta está girando...";
 
+                // Generar giros y sumar a los grados acumulados
                 const vueltasExtra = Math.floor(Math.random() * 360) + 1440; 
                 gradosActuales += vueltasExtra;
                 wheel.style.transform = `rotate(${gradosActuales}deg)`;
 
                 setTimeout(() => {
-                    const anguloFinal = (gradosActuales % 360);
+                    // Calculamos qué porción cayó apuntando arriba (teniendo en cuenta la rotación acumulada en sentido horario)
+                    // El puntero está fijo arriba (0 grados). El cálculo mapea exactamente los sectores visuales creados.
+                    const anguloFinal = (360 - (gradosActuales % 360)) % 360;
+                    
                     if (anguloFinal >= 0 && anguloFinal < 60) {
                         saldoActual += 2.00;
                         mensajeRuleta.textContent = "💰 ¡Multiplicador x2! Ganaste $2.00";
                     } else if (anguloFinal >= 60 && anguloFinal < 120) {
-                        mensajeRuleta.textContent = "💀 ¡Mala suerte! Sector vacío (x0)";
+                        saldoActual += 1.00;
+                        mensajeRuleta.textContent = "👍 ¡Empate! Recuperas tu $1.00";
                     } else if (anguloFinal >= 120 && anguloFinal < 180) {
-                        saldoActual += 1.50;
-                        mensajeRuleta.textContent = "💵 ¡Premio menor! Ganaste $1.50";
+                        saldoActual += 5.00;
+                        mensajeRuleta.textContent = "🚀 ¡PREMIO MAYOR! Ganaste $5.00";
                     } else if (anguloFinal >= 180 && anguloFinal < 240) {
                         saldoActual += 0.50;
                         mensajeRuleta.textContent = "✨ ¡Devolución parcial! Recibes $0.50";
                     } else if (anguloFinal >= 240 && anguloFinal < 300) {
-                        saldoActual += 5.00;
-                        mensajeRuleta.textContent = "🚀 ¡PREMIO MAYOR! Ganaste $5.00";
+                        saldoActual += 1.50;
+                        mensajeRuleta.textContent = "💵 ¡Premio menor! Ganaste $1.50";
                     } else {
-                        saldoActual += 1.00;
-                        mensajeRuleta.textContent = "👍 ¡Empate! Recuperas tu $1.00";
+                        mensajeRuleta.textContent = "💀 ¡Mala suerte! Sector vacío (x0)";
                     }
                     displaySaldo.textContent = saldoActual.toFixed(2);
                 }, 4000);
