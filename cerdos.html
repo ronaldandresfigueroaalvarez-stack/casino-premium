@@ -10,7 +10,6 @@
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            /* Fondo marrón claro en degradado elegante */
             background-color: #d7ccc8;
             background: radial-gradient(circle, #efebe9 0%, #d7ccc8 100%);
             color: #2e1c16;
@@ -102,8 +101,15 @@
             background: #fbe9e7;
             padding: 15px;
             border-radius: 12px;
-            margin-top: 20px;
+            margin-top: 15px;
             border-left: 5px solid #d84315;
+        }
+        .weight-box {
+            background: #efebe9;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            border-left: 5px solid #6d4c41;
         }
         .result-row {
             display: flex;
@@ -115,6 +121,10 @@
         .result-val {
             font-weight: bold;
             color: #d84315;
+        }
+        .weight-val {
+            font-weight: bold;
+            color: #4e342e;
         }
         .alert {
             color: #c62828;
@@ -133,7 +143,7 @@
 
 <div class="container">
     <h2>Control Porcino</h2>
-    <span class="subtitle">Calculadora de Alimento Basada en Tabla Excel</span>
+    <span class="subtitle">Calculadora de Alimento y Peso Esperado</span>
     
     <div class="tabs">
         <button class="tab active" onclick="switchTab('raciones')">🌾 Raciones</button>
@@ -148,39 +158,44 @@
         <label>Etapa y Semana de Desarrollo:</label>
         <select id="etapa" onchange="calcular()">
             <optgroup label="👶 Preiniciador">
-                <option value="0.22">Semana 1 (0.22 kg/día)</option>
-                <option value="0.37">Semana 2 (0.37 kg/día)</option>
-                <option value="0.53">Semana 3 (0.53 kg/día)</option>
+                <option value="0.22" data-weight="6.0">Semana 1 (0.22 kg/día)</option>
+                <option value="0.37" data-weight="8.3">Semana 2 (0.37 kg/día)</option>
+                <option value="0.53" data-weight="11.4">Semana 3 (0.53 kg/día)</option>
             </optgroup>
             <optgroup label="🐗 Iniciación">
-                <option value="0.73">Semana 4 (0.73 kg/día)</option>
-                <option value="0.88">Semana 5 (0.88 kg/día)</option>
-                <option value="1.00" selected>Semana 6 (1.00 kg/día)</option>
+                <option value="0.73" data-weight="15.3">Semana 4 (0.73 kg/día)</option>
+                <option value="0.88" data-weight="20.0">Semana 5 (0.88 kg/día)</option>
+                <option value="1.00" data-weight="25.3" selected>Semana 6 (1.00 kg/día)</option>
             </optgroup>
             <optgroup label="🐖 Levante">
-                <option value="1.35">Semana 7 (1.35 kg/día)</option>
-                <option value="1.50">Semana 8 (1.50 kg/día)</option>
-                <option value="1.65">Semana 9 (1.65 kg/día)</option>
-                <option value="1.80">Semana 10 (1.80 kg/día)</option>
-                <option value="1.95">Semana 11 (1.95 kg/día)</option>
+                <option value="1.35" data-weight="31.2">Semana 7 (1.35 kg/día)</option>
+                <option value="1.50" data-weight="37.8">Semana 8 (1.50 kg/día)</option>
+                <option value="1.65" data-weight="44.9">Semana 9 (1.65 kg/día)</option>
+                <option value="1.80" data-weight="52.4">Semana 10 (1.80 kg/día)</option>
+                <option value="1.95" data-weight="60.3">Semana 11 (1.95 kg/día)</option>
             </optgroup>
             <optgroup label="🥩 Engorde">
-                <option value="2.06">Semana 12 (2.06 kg/día)</option>
-                <option value="2.15">Semana 13 (2.15 kg/día)</option>
-                <option value="2.25">Semana 14 (2.25 kg/día)</option>
-                <option value="2.35">Semana 15 (2.35 kg/día)</option>
-                <option value="2.45">Semana 16 (2.45 kg/día)</option>
-                <option value="2.55">Semana 17 (2.55 kg/día)</option>
-                <option value="2.65">Semana 18 (2.65 kg/día)</option>
-                <option value="2.75">Semana 19 (2.75 kg/día)</option>
-                <option value="2.80">Semana 20 (2.80 kg/día)</option>
-                <option value="2.85">Semana 21 (2.85 kg/día)</option>
+                <option value="2.06" data-weight="68.5">Semana 12 (2.06 kg/día)</option>
+                <option value="2.15" data-weight="76.8">Semana 13 (2.15 kg/día)</option>
+                <option value="2.25" data-weight="85.3">Semana 14 (2.25 kg/día)</option>
+                <option value="2.35" data-weight="93.8">Semana 15 (2.35 kg/día)</option>
+                <option value="2.45" data-weight="102.2">Semana 16 (2.45 kg/día)</option>
+                <option value="2.55" data-weight="110.5">Semana 17 (2.55 kg/día)</option>
+                <option value="2.65" data-weight="118.5">Semana 18 (2.65 kg/día)</option>
+                <option value="2.75" data-weight="126.1">Semana 19 (2.75 kg/día)</option>
+                <option value="2.80" data-weight="133.3">Semana 20 (2.80 kg/día)</option>
+                <option value="2.85" data-weight="140.0">Semana 21 (2.85 kg/día)</option>
             </optgroup>
         </select>
 
         <div class="result-box">
             <div class="result-row"><span>Consumo Diario Total:</span><span class="result-val" id="consumoDiario">0.00 Kg</span></div>
             <div class="result-row"><span>Sacos Diarios Necesarios:</span><span class="result-val" id="sacosDiarios">0.00 Sacos</span></div>
+        </div>
+
+        <div class="weight-box">
+            <div class="result-row"><span>Peso Esperado / Cerdo:</span><span class="weight-val" id="pesoEsperadoUnidad">0.00 Kg</span></div>
+            <div class="result-row"><span>Peso Total Estimado Lote:</span><span class="weight-val" id="pesoEsperadoTotal">0.00 Kg</span></div>
         </div>
     </div>
 
@@ -220,7 +235,12 @@
 
     function calcular() {
         let cerdos = parseFloat(document.getElementById('cerdos').value) || 0;
-        let consumoPorCerdo = parseFloat(document.getElementById('etapa').value) || 0;
+        
+        let selectEtapa = document.getElementById('etapa');
+        let consumoPorCerdo = parseFloat(selectEtapa.value) || 0;
+        // Obtener el peso esperado desde el atributo data-weight de la opción seleccionada
+        let pesoEsperadoPorCerdo = parseFloat(selectEtapa.options[selectEtapa.selectedIndex].getAttribute('data-weight')) || 0;
+
         let sacosBodega = parseFloat(document.getElementById('sacosBodega').value) || 0;
         let pesoSaco = parseFloat(document.getElementById('pesoSaco').value) || 40;
         let precioSaco = parseFloat(document.getElementById('precioSaco').value) || 0;
@@ -231,6 +251,11 @@
 
         document.getElementById('consumoDiario').innerText = consumoDiarioTotal.toFixed(2) + " Kg";
         document.getElementById('sacosDiarios').innerText = sacosDiariosReq.toFixed(2) + " Sacos";
+
+        // Pesos esperados
+        let pesoTotalLote = cerdos * pesoEsperadoPorCerdo;
+        document.getElementById('pesoEsperadoUnidad').innerText = pesoEsperadoPorCerdo.toFixed(2) + " Kg";
+        document.getElementById('pesoEsperadoTotal').innerText = pesoTotalLote.toFixed(2) + " Kg";
 
         // Bodega
         let kilosTotalesBodega = sacosBodega * pesoSaco;
