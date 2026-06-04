@@ -328,7 +328,7 @@
         let saldoActual = 10.00;
         const displaySaldo = document.getElementById('displaySaldo');
 
-        // MOTOR DE AUDIO SINTETIZADO (Sintoniza frecuencias por código)
+        // MOTOR DE AUDIO SINTETIZADO (Generación nativa limpia)
         let audioCtx = null;
 
         function iniciarAudioContext() {
@@ -347,7 +347,6 @@
             const now = audioCtx.currentTime;
             
             if (tipo === 'apostar') {
-                // Sonido tipo "Blip" rápido ascendente
                 let osc = audioCtx.createOscillator();
                 let gain = audioCtx.createGain();
                 osc.type = 'triangle';
@@ -361,7 +360,6 @@
                 osc.stop(now + 0.15);
             } 
             else if (tipo === 'ruleta') {
-                // Sonido repetitivo de tic-tic de ruleta
                 for (let i = 0; i < 15; i++) {
                     let timeOffset = i * 0.12;
                     let osc = audioCtx.createOscillator();
@@ -377,7 +375,6 @@
                 }
             } 
             else if (tipo === 'premio') {
-                // Arpegio triunfal de casino alegre (Do - Mi - Sol - Do)
                 const notas = [523.25, 659.25, 783.99, 1046.50];
                 notas.forEach((freq, index) => {
                     let osc = audioCtx.createOscillator();
@@ -393,7 +390,6 @@
                 });
             } 
             else if (tipo === 'perder') {
-                // Sonido descendente triste de derrota
                 let osc = audioCtx.createOscillator();
                 let gain = audioCtx.createGain();
                 osc.type = 'sawtooth';
@@ -408,7 +404,6 @@
             }
         }
 
-        // Desbloqueadores universales al tocar la pantalla
         document.addEventListener('click', iniciarAudioContext);
         document.addEventListener('touchstart', iniciarAudioContext);
 
@@ -511,7 +506,7 @@
             displaySaldo.textContent = saldoActual.toFixed(2);
         }
 
-    // --- RULETA ---
+        // --- RULETA ---
         const wheel = document.getElementById('wheel');
         const btnGirarRuleta = document.getElementById('btnGirarRuleta');
         const mensajeRuleta = document.getElementById('mensajeRuleta');
@@ -527,7 +522,6 @@
                 mensajeRuleta.textContent = "🎡 La ruleta está girando...";
                 playSonido('ruleta');
 
-                // Giro aleatorio de la rueda
                 const vueltasExtra = Math.floor(Math.random() * 360) + 1440; 
                 gradosActuales += vueltasExtra;
                 wheel.style.transform = `rotate(${gradosActuales}deg)`;
@@ -536,7 +530,6 @@
                     const anguloFinal = (360 - (gradosActuales % 360)) % 360;
                     const sector = Math.floor(anguloFinal / 60);
                     
-                    // 1. Asignamos los premios y los textos según el sector visual
                     if (sector === 0) {
                         saldoActual += 2.00;
                         mensajeRuleta.textContent = "💰 ¡Multiplicador x2! Ganaste $2.00";
@@ -558,7 +551,7 @@
                         mensajeRuleta.textContent = "👍 ¡Empate! Recuperas tu $1.00";
                     }
 
-                    // 2. Comprobación de texto limpia y segura (sin guiones que rompan el código)
+                    // Validación por texto sin guiones peligrosos
                     let textoActual = mensajeRuleta.textContent;
 
                     if (textoActual.includes("Mala suerte") || textoActual.includes("Devolución parcial")) {
@@ -567,157 +560,6 @@
                         playSonido('premio');
                     }
 
-                    displaySaldo.textContent = saldoActual.toFixed(2);
-                }, 4000);
-            });
-        }
-        if(btnGirarRuleta) {
-            btnGirarRuleta.addEventListener('click', () => {
-                iniciarAudioContext();
-                if (saldoActual < 1.00) { mensajeRuleta.textContent = "❌ Saldo insuficiente."; return; }
-                
-                saldoActual -= 1.00;
-                displaySaldo.textContent = saldoActual.toFixed(2);
-                mensajeRuleta.textContent = "🎡 La ruleta está girando...";
-                playSonido('ruleta');
-
-                // Giro aleatorio de la ruleta
-                const vueltasExtra = Math.floor(Math.random() * 360) + 1440; 
-                gradosActuales += vueltasExtra;
-                wheel.style.transform = `rotate(${gradosActuales}deg)`;
-
-                setTimeout(() => {
-                    // Calculamos el sector (del 0 al 5) de forma limpia
-                    const anguloFinal = (360 - (gradosActuales % 360)) % 360;
-                    const sector = Math.floor(anguloFinal / 60);
-                    
-                    let sonidoA-Reproducir = 'perder'; // Por defecto ponemos perder
-
-                    // Asignación estricta de premio y mensaje según el sector real
-                    if (sector === 0) {
-                        saldoActual += 2.00;
-                        mensajeRuleta.textContent = "💰 ¡Multiplicador x2! Ganaste $2.00";
-                        sonidoA-Reproducir = 'premio';
-                    } else if (sector === 1) {
-                        saldoActual += 0.00; // SECTOR CALAVERA 💀
-                        mensajeRuleta.textContent = "💀 ¡Mala suerte! Sector vacío (x0)";
-                        sonidoA-Reproducir = 'perder'; // FORZADO: Siempre sonará perder aquí
-                    } else if (sector === 2) {
-                        saldoActual += 1.50;
-                        mensajeRuleta.textContent = "💵 ¡Premio menor! Ganaste $1.50";
-                        sonidoA-Reproducir = 'premio';
-                    } else if (sector === 3) {
-                        saldoActual += 0.50;
-                        mensajeRuleta.textContent = "✨ ¡Devolución parcial! Recibes $0.50";
-                        sonidoA-Reproducir = 'perder'; // Sonido triste porque se pierde la mitad
-                    } else if (sector === 4) {
-                        saldoActual += 5.00;
-                        mensajeRuleta.textContent = "🚀 ¡JACKPOT! Ganaste $5.00";
-                        sonidoA-Reproducir = 'premio';
-                        lanzarPapelitos(); 
-                    } else {
-                        saldoActual += 1.00; // SECTOR x1 👍
-                        mensajeRuleta.textContent = "👍 ¡Empate! Recuperas tu $1.00";
-                        sonidoA-Reproducir = 'premio'; // Sonido alegre por salvar el dinero
-                    }
-
-                    // Ejecuta el sonido correcto sin importar los grados de desfase
-                    playSonido(sonidoA-Reproducir);
-                    displaySaldo.textContent = saldoActual.toFixed(2);
-                }, 4000);
-            });
-        }
-
-        if(btnGirarRuleta) {
-            btnGirarRuleta.addEventListener('click', () => {
-                iniciarAudioContext();
-                if (saldoActual < 1.00) { mensajeRuleta.textContent = "❌ Saldo insuficiente."; return; }
-                
-                saldoActual -= 1.00;
-                displaySaldo.textContent = saldoActual.toFixed(2);
-                mensajeRuleta.textContent = "🎡 La ruleta está girando...";
-                playSonido('ruleta');
-
-                const vueltasExtra = Math.floor(Math.random() * 360) + 1440; 
-                gradosActuales += vueltasExtra;
-                wheel.style.transform = `rotate(${gradosActuales}deg)`;
-
-                setTimeout(() => {
-                    const anguloFinal = (360 - (gradosActuales % 360)) % 360;
-                    
-                    if (anguloFinal >= 0 && anguloFinal < 60) {
-                        saldoActual += 2.00;
-                        mensajeRuleta.textContent = "💰 ¡Multiplicador x2! Ganaste $2.00";
-                        playSonido('premio'); // Sonido de victoria correcto
-                    } else if (anguloFinal >= 60 && anguloFinal < 120) {
-                        saldoActual += 0.00; // Es el sector del 0 (Calavera)
-                        mensajeRuleta.textContent = "💀 ¡Mala suerte! Sector vacío (x0)";
-                        playSonido('perder'); // CORREGIDO: Sonido de pérdida en el cero
-                    } else if (anguloFinal >= 120 && anguloFinal < 180) {
-                        saldoActual += 1.50; // Es el sector de x1.5
-                        mensajeRuleta.textContent = "💵 ¡Premio menor! Ganaste $1.50";
-                        playSonido('premio'); // Sonido de victoria
-                    } else if (anguloFinal >= 180 && anguloFinal < 240) {
-                        saldoActual += 0.50; // Es el sector de x0.5
-                        mensajeRuleta.textContent = "✨ ¡Devolución parcial! Recibes $0.50";
-                        playSonido('perder'); // Sonido de pérdida o neutral porque pierdes la mitad
-                    } else if (anguloFinal >= 240 && anguloFinal < 300) {
-                        saldoActual += 5.00; // Es el sector del JACKPOT
-                        mensajeRuleta.textContent = "🚀 ¡JACKPOT! Ganaste $5.00";
-                        playSonido('premio'); // Sonido de gran victoria
-                        lanzarPapelitos(); 
-                    } else {
-                        saldoActual += 1.00; // Es el sector de x1 (Empate)
-                        mensajeRuleta.textContent = "👍 ¡Empate! Recuperas tu $1.00";
-                        playSonido('premio'); // CORREGIDO: Sonido feliz o neutral por recuperar tu dinero en vez de perder
-                    }
-                    displaySaldo.textContent = saldoActual.toFixed(2);
-                }, 4000);
-            });
-        }
-
-        if(btnGirarRuleta) {
-            btnGirarRuleta.addEventListener('click', () => {
-                iniciarAudioContext();
-                if (saldoActual < 1.00) { mensajeRuleta.textContent = "❌ Saldo insuficiente."; return; }
-                
-                saldoActual -= 1.00;
-                displaySaldo.textContent = saldoActual.toFixed(2);
-                mensajeRuleta.textContent = "🎡 La ruleta está girando...";
-                playSonido('ruleta');
-
-                const vueltasExtra = Math.floor(Math.random() * 360) + 1440; 
-                gradosActuales += vueltasExtra;
-                wheel.style.transform = `rotate(${gradosActuales}deg)`;
-
-                setTimeout(() => {
-                    const anguloFinal = (360 - (gradosActuales % 360)) % 360;
-                    
-                    if (anguloFinal >= 0 && anguloFinal < 60) {
-                        saldoActual += 2.00;
-                        mensajeRuleta.textContent = "💰 ¡Multiplicador x2! Ganaste $2.00";
-                        playSonido('premio');
-                    } else if (anguloFinal >= 60 && anguloFinal < 120) {
-                        saldoActual += 1.00;
-                        mensajeRuleta.textContent = "👍 ¡Empate! Recuperas tu $1.00";
-                        playSonido('premio');
-                    } else if (anguloFinal >= 120 && anguloFinal < 180) {
-                        saldoActual += 5.00;
-                        mensajeRuleta.textContent = "🚀 ¡JACKPOT! Ganaste $5.00";
-                        playSonido('premio');
-                        lanzarPapelitos(); 
-                    } else if (anguloFinal >= 180 && anguloFinal < 240) {
-                        saldoActual += 0.50;
-                        mensajeRuleta.textContent = "✨ ¡Devolución parcial! Recibes $0.50";
-                        playSonido('premio');
-                    } else if (anguloFinal >= 240 && anguloFinal < 300) {
-                        saldoActual += 1.50;
-                        mensajeRuleta.textContent = "💵 ¡Premio menor! Ganaste $1.50";
-                        playSonido('premio');
-                    } else {
-                        mensajeRuleta.textContent = "💀 ¡Mala suerte! Sector vacío (x0)";
-                        playSonido('perder');
-                    }
                     displaySaldo.textContent = saldoActual.toFixed(2);
                 }, 4000);
             });
