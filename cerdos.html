@@ -5,136 +5,184 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora Porcina Premium</title>
     <style>
+        :root {
+            --bg-main: #d7ccc8;
+            --bg-card: #ffffff;
+            --text-dark: #2e1c16;
+            --text-med: #5d4037;
+            --primary: #8d6e63;
+            --primary-dark: #4e342e;
+            --accent-orange: #e64a19;
+            --accent-green: #2e7d32;
+        }
+
         body {
             text-align: center;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #d7ccc8;
+            background-color: var(--bg-main);
             background: radial-gradient(circle, #efebe9 0%, #d7ccc8 100%);
-            color: #2e1c16;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
         }
+
         .container {
-            max-width: 450px;
-            margin: auto;
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(74, 50, 42, 0.2);
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-card);
+            padding: 30px 24px;
+            border-radius: 24px;
+            box-shadow: 0 16px 40px rgba(74, 50, 42, 0.15);
             border: 1px solid #bcaaa4;
+            box-sizing: border-box;
         }
+
         h2 {
-            margin-top: 0;
-            color: #4e342e;
-            font-size: 24px;
+            margin: 0 0 6px 0;
+            color: var(--primary-dark);
+            font-size: 26px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 3px solid #8d6e63;
-            padding-bottom: 10px;
+            letter-spacing: 1.5px;
+            font-weight: 800;
         }
+
         .subtitle {
-            font-size: 12px;
-            color: #6d4c41;
-            margin-top: -8px;
-            margin-bottom: 20px;
+            font-size: 13px;
+            color: var(--text-med);
+            margin-bottom: 24px;
             display: block;
             font-weight: 500;
+            letter-spacing: 0.5px;
         }
+
         .tabs {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             background: #f5f5f5;
-            padding: 5px;
-            border-radius: 12px;
+            padding: 6px;
+            border-radius: 16px;
             border: 1px solid #e0e0e0;
         }
+
         .tab {
             flex: 1;
-            padding: 10px;
+            padding: 12px 8px;
             cursor: pointer;
             background: none;
             border: none;
             color: #757575;
-            font-weight: bold;
-            border-radius: 8px;
-            transition: 0.3s;
+            font-weight: 700;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
+
         .tab.active {
-            background: #8d6e63;
+            background: var(--primary);
             color: white;
-            box-shadow: 0 4px 12px rgba(141, 110, 99, 0.3);
+            box-shadow: 0 6px 14px rgba(141, 110, 99, 0.3);
         }
+
         .panel {
             display: none;
             text-align: left;
+            animation: fadeIn 0.4s ease;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .panel.active {
             display: block;
         }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
         label {
-            font-weight: 600;
+            font-weight: 700;
             display: block;
-            margin-top: 15px;
-            color: #4e342e;
+            margin-bottom: 6px;
+            color: var(--primary-dark);
             font-size: 14px;
         }
+
         input, select {
             width: 100%;
-            padding: 12px;
-            margin-top: 5px;
+            padding: 14px 16px;
             box-sizing: border-box;
-            border-radius: 10px;
-            border: 1px solid #bcaaa4;
-            background: #fafafa;
-            color: #2e1c16;
+            border-radius: 14px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            color: var(--text-dark);
             font-size: 16px;
-            transition: 0.3s;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
+
         input:focus, select:focus {
-            border-color: #8d6e63;
+            border-color: var(--primary);
             outline: none;
-            box-shadow: 0 0 8px rgba(141, 110, 99, 0.4);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(141, 110, 99, 0.15);
         }
-        .result-box {
-            background: #fbe9e7;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 15px;
-            border-left: 5px solid #d84315;
+
+        .card-result {
+            background: #fff5f2;
+            padding: 18px;
+            border-radius: 16px;
+            margin-top: 16px;
+            border-left: 5px solid var(--accent-orange);
+            box-shadow: 0 4px 12px rgba(230, 74, 25, 0.05);
         }
-        .weight-box {
-            background: #efebe9;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 15px;
-            border-left: 5px solid #6d4c41;
+
+        .card-weight {
+            background: #fdfaf9;
+            padding: 18px;
+            border-radius: 16px;
+            margin-top: 14px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 4px 12px rgba(141, 110, 99, 0.05);
         }
+
         .result-row {
             display: flex;
             justify-content: space-between;
-            margin: 8px 0;
+            align-items: center;
+            margin: 10px 0;
             font-size: 15px;
-            color: #4e342e;
+            font-weight: 500;
+            color: var(--primary-dark);
         }
-        .result-val {
-            font-weight: bold;
-            color: #d84315;
-        }
-        .weight-val {
-            font-weight: bold;
-            color: #4e342e;
-        }
+
+        .result-row:first-child { margin-top: 0; }
+        .result-row:last-child { margin-bottom: 0; }
+
+        .val-orange { font-weight: 850; color: var(--accent-orange); font-size: 17px; }
+        .val-brown { font-weight: 850; color: var(--primary-dark); font-size: 17px; }
+        .val-green { font-weight: 850; color: var(--accent-green); font-size: 17px; }
+
         .alert {
-            color: #c62828;
-            font-weight: bold;
-            background: #ffebee;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 10px;
+            color: #b91c1c;
+            font-weight: 700;
+            background: #fef2f2;
+            padding: 12px;
+            border-radius: 12px;
+            margin-top: 14px;
             text-align: center;
-            border: 1px solid #ef9a9a;
+            border: 1px solid #fca5a5;
             font-size: 14px;
         }
     </style>
@@ -143,83 +191,93 @@
 
 <div class="container">
     <h2>Control Porcino</h2>
-    <span class="subtitle">Calculadora de Alimento y Peso Esperado</span>
+    <span class="subtitle">Gestión Tecnificada de Alimento y Peso</span>
     
     <div class="tabs">
-        <button class="tab active" onclick="switchTab('raciones')">🌾 Raciones</button>
+        <button class="tab active" onclick="switchTab('raciones')">🐖 Raciones</button>
         <button class="tab" onclick="switchTab('bodega')">📦 Bodega</button>
         <button class="tab" onclick="switchTab('costos')">💰 Costos</button>
     </div>
 
     <div id="raciones" class="panel active">
-        <label>Número de Cerdos en Corral:</label>
-        <input type="number" id="cerdos" value="10" min="0" oninput="calcular()">
-
-        <label>Etapa y Semana de Desarrollo:</label>
-        <select id="etapa" onchange="calcular()">
-            <optgroup label="👶 Preiniciador">
-                <option value="0.22" data-weight="6.0">Semana 1 (0.22 kg/día)</option>
-                <option value="0.37" data-weight="8.3">Semana 2 (0.37 kg/día)</option>
-                <option value="0.53" data-weight="11.4">Semana 3 (0.53 kg/día)</option>
-            </optgroup>
-            <optgroup label="🐗 Iniciación">
-                <option value="0.73" data-weight="15.3">Semana 4 (0.73 kg/día)</option>
-                <option value="0.88" data-weight="20.0">Semana 5 (0.88 kg/día)</option>
-                <option value="1.00" data-weight="25.3" selected>Semana 6 (1.00 kg/día)</option>
-            </optgroup>
-            <optgroup label="🐖 Levante">
-                <option value="1.35" data-weight="31.2">Semana 7 (1.35 kg/día)</option>
-                <option value="1.50" data-weight="37.8">Semana 8 (1.50 kg/día)</option>
-                <option value="1.65" data-weight="44.9">Semana 9 (1.65 kg/día)</option>
-                <option value="1.80" data-weight="52.4">Semana 10 (1.80 kg/día)</option>
-                <option value="1.95" data-weight="60.3">Semana 11 (1.95 kg/día)</option>
-            </optgroup>
-            <optgroup label="🥩 Engorde">
-                <option value="2.06" data-weight="68.5">Semana 12 (2.06 kg/día)</option>
-                <option value="2.15" data-weight="76.8">Semana 13 (2.15 kg/día)</option>
-                <option value="2.25" data-weight="85.3">Semana 14 (2.25 kg/día)</option>
-                <option value="2.35" data-weight="93.8">Semana 15 (2.35 kg/día)</option>
-                <option value="2.45" data-weight="102.2">Semana 16 (2.45 kg/día)</option>
-                <option value="2.55" data-weight="110.5">Semana 17 (2.55 kg/día)</option>
-                <option value="2.65" data-weight="118.5">Semana 18 (2.65 kg/día)</option>
-                <option value="2.75" data-weight="126.1">Semana 19 (2.75 kg/día)</option>
-                <option value="2.80" data-weight="133.3">Semana 20 (2.80 kg/día)</option>
-                <option value="2.85" data-weight="140.0">Semana 21 (2.85 kg/día)</option>
-            </optgroup>
-        </select>
-
-        <div class="result-box">
-            <div class="result-row"><span>Consumo Diario Total:</span><span class="result-val" id="consumoDiario">0.00 Kg</span></div>
-            <div class="result-row"><span>Sacos Diarios Necesarios:</span><span class="result-val" id="sacosDiarios">0.00 Sacos</span></div>
+        <div class="input-group">
+            <label>Número de Cerdos en Corral:</label>
+            <input type="number" id="cerdos" value="10" min="0" oninput="calcular()">
         </div>
 
-        <div class="weight-box">
-            <div class="result-row"><span>Peso Esperado / Cerdo:</span><span class="weight-val" id="pesoEsperadoUnidad">0.00 Kg</span></div>
-            <div class="result-row"><span>Peso Total Estimado Lote:</span><span class="weight-val" id="pesoEsperadoTotal">0.00 Kg</span></div>
+        <div class="input-group">
+            <label>Etapa y Semana de Desarrollo:</label>
+            <select id="etapa" onchange="calcular()">
+                <optgroup label="🐷 Preiniciador">
+                    <option value="0.22" data-weight="6.00" data-expected="73.3">Semana 1 (0.22 kg/día)</option>
+                    <option value="0.37" data-weight="7.33" data-expected="92.9">Semana 2 (0.37 kg/día)</option>
+                    <option value="0.53" data-weight="9.29" data-expected="120.2">Semana 3 (0.53 kg/día)</option>
+                </optgroup>
+                <optgroup label="🐖 Iniciación">
+                    <option value="0.73" data-weight="12.02" data-expected="156.6">Semana 4 (0.73 kg/día)</option>
+                    <option value="0.88" data-weight="15.66" data-expected="200.7">Semana 5 (0.88 kg/día)</option>
+                    <option value="1.00" data-weight="20.07" data-expected="249.7" selected>Semana 6 (1.00 kg/día)</option>
+                </optgroup>
+                <optgroup label="🐖 Levante">
+                    <option value="1.35" data-weight="25.00" data-expected="302.0">Semana 7 (1.35 kg/día)</option>
+                    <option value="1.50" data-weight="30.20" data-expected="357.0">Semana 8 (1.50 kg/día)</option>
+                    <option value="1.65" data-weight="35.70" data-expected="414.0">Semana 9 (1.65 kg/día)</option>
+                    <option value="1.80" data-weight="41.40" data-expected="472.0">Semana 10 (1.80 kg/día)</option>
+                    <option value="1.95" data-weight="47.20" data-expected="531.0">Semana 11 (1.95 kg/día)</option>
+                </optgroup>
+                <optgroup label="🥩 Engorde">
+                    <option value="2.06" data-weight="53.10" data-expected="593.0">Semana 12 (2.06 kg/día)</option>
+                    <option value="2.15" data-weight="59.30" data-expected="655.0">Semana 13 (2.15 kg/día)</option>
+                    <option value="2.25" data-weight="65.60" data-expected="720.0">Semana 14 (2.25 kg/día)</option>
+                    <option value="2.35" data-weight="72.00" data-expected="786.0">Semana 15 (2.35 kg/día)</option>
+                    <option value="2.45" data-weight="78.60" data-expected="853.0">Semana 16 (2.45 kg/día)</option>
+                    <option value="2.55" data-weight="85.30" data-expected="922.0">Semana 17 (2.55 kg/día)</option>
+                    <option value="2.65" data-weight="92.20" data-expected="992.0">Semana 18 (2.65 kg/día)</option>
+                    <option value="2.75" data-weight="99.20" data-expected="1063.0">Semana 19 (2.75 kg/día)</option>
+                    <option value="2.80" data-weight="106.30" data-expected="1135.0">Semana 20 (2.80 kg/día)</option>
+                    <option value="2.85" data-weight="113.50" data-expected="1207.0">Semana 21 (2.85 kg/día)</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <div class="card-result">
+            <div class="result-row"><span>Consumo Diario Total:</span><span class="val-orange" id="consumoDiario">0.00 Kg</span></div>
+            <div class="result-row"><span>Sacos Diarios Necesarios:</span><span class="val-orange" id="sacosDiarios">0.00 Sacos</span></div>
+        </div>
+
+        <div class="card-weight">
+            <div class="result-row"><span>Peso Promedio Actual:</span><span class="val-brown" id="pesoActualUnidad">0.00 Kg</span></div>
+            <div class="result-row"><span>Peso Esperado Lote (Meta):</span><span class="val-brown" id="pesoEsperadoTotal">0.00 Kg</span></div>
         </div>
     </div>
 
     <div id="bodega" class="panel">
-        <label>Sacos Actuales en Bodega:</label>
-        <input type="number" id="sacosBodega" value="10" min="0" oninput="calcular()">
-        
-        <label>Peso por Saco (Kg):</label>
-        <input type="number" id="pesoSaco" value="40" min="1" oninput="calcular()">
-
-        <div class="result-box" style="border-left-color: #f57c00; background-color: #fff3e0;">
-            <div class="result-row"><span>Alimento Total Disponible:</span><span class="result-val" id="kilosBodega" style="color:#e65100;">0.00 Kg</span></div>
-            <div class="result-row"><span>Días de Autonomía Restantes:</span><span class="result-val" id="diasAbasto" style="color:#e65100;">0 Días</span></div>
+        <div class="input-group">
+            <label>Sacos Actuales en Bodega:</label>
+            <input type="number" id="sacosBodega" value="10" min="0" oninput="calcular()">
         </div>
-        <div id="alertaBodega" class="alert" style="display:none;">⚠️ ¡Alimento crítico! Menos de 3 días de abasto.</div>
+        
+        <div class="input-group">
+            <label>Peso por Saco (Kg):</label>
+            <input type="number" id="pesoSaco" value="40" min="1" oninput="calcular()">
+        </div>
+
+        <div class="card-result" style="border-left-color: #ef6c00; background-color: #fff8f1;">
+            <div class="result-row"><span>Alimento Disponible:</span><span class="val-orange" id="kilosBodega" style="color:#ef6c00;">0.00 Kg</span></div>
+            <div class="result-row"><span>Autonomía de Abasto:</span><span class="val-orange" id="diasAbasto" style="color:#ef6c00;">0 Días</span></div>
+        </div>
+        <div id="alertaBodega" class="alert" style="display:none;">⚠️ ¡Inventario Crítico! Quedan menos de 3 días de alimento.</div>
     </div>
 
     <div id="costos" class="panel">
-        <label>Precio por Saco de Alimento ($):</label>
-        <input type="number" id="precioSaco" value="25" min="0" oninput="calcular()">
+        <div class="input-group">
+            <label>Precio por Saco de Alimento ($):</label>
+            <input type="number" id="precioSaco" value="25" min="0" oninput="calcular()">
+        </div>
 
-        <div class="result-box" style="border-left-color: #2e7d32; background-color: #e8f5e9;">
-            <div class="result-row"><span>Gasto Diario en Alimento:</span><span class="result-val" id="gastoDiario" style="color:#1b5e20;">$0.00</span></div>
-            <div class="result-row"><span>Gasto Mensual Estimado (30d):</span><span class="result-val" id="gastoMensual" style="color:#1b5e20;">$0.00</span></div>
+        <div class="card-result" style="border-left-color: var(--accent-green); background-color: #f4fbf7;">
+            <div class="result-row"><span>Inversión Alimentaria Diaria:</span><span class="val-green" id="gastoDiario">$0.00</span></div>
+            <div class="result-row"><span>Proyección Mensual (30d):</span><span class="val-green" id="gastoMensual">$0.00</span></div>
         </div>
     </div>
 </div>
@@ -238,26 +296,27 @@
         
         let selectEtapa = document.getElementById('etapa');
         let consumoPorCerdo = parseFloat(selectEtapa.value) || 0;
-        // Obtener el peso esperado desde el atributo data-weight de la opción seleccionada
-        let pesoEsperadoPorCerdo = parseFloat(selectEtapa.options[selectEtapa.selectedIndex].getAttribute('data-weight')) || 0;
+        
+        // Atributos extraídos de la tabla real de Excel cargada
+        let pesoActualPorCerdo = parseFloat(selectEtapa.options[selectEtapa.selectedIndex].getAttribute('data-weight')) || 0;
+        let pesoEsperadoLote = parseFloat(selectEtapa.options[selectEtapa.selectedIndex].getAttribute('data-expected')) || 0;
 
         let sacosBodega = parseFloat(document.getElementById('sacosBodega').value) || 0;
         let pesoSaco = parseFloat(document.getElementById('pesoSaco').value) || 40;
         let precioSaco = parseFloat(document.getElementById('precioSaco').value) || 0;
 
-        // Raciones
+        // Operación de Raciones
         let consumoDiarioTotal = cerdos * consumoPorCerdo;
         let sacosDiariosReq = consumoDiarioTotal / pesoSaco;
 
         document.getElementById('consumoDiario').innerText = consumoDiarioTotal.toFixed(2) + " Kg";
         document.getElementById('sacosDiarios').innerText = sacosDiariosReq.toFixed(2) + " Sacos";
 
-        // Pesos esperados
-        let pesoTotalLote = cerdos * pesoEsperadoPorCerdo;
-        document.getElementById('pesoEsperadoUnidad').innerText = pesoEsperadoPorCerdo.toFixed(2) + " Kg";
-        document.getElementById('pesoEsperadoTotal').innerText = pesoTotalLote.toFixed(2) + " Kg";
+        // Mapeo de Pesos (Actual Individual vs Meta Esperada Total del Lote)
+        document.getElementById('pesoActualUnidad').innerText = pesoActualPorCerdo.toFixed(2) + " Kg";
+        document.getElementById('pesoEsperadoTotal').innerText = (cerdos > 0 ? (pesoEsperadoLote * (cerdos/10)) : 0).toFixed(1) + " Kg";
 
-        // Bodega
+        // Operación de Bodega
         let kilosTotalesBodega = sacosBodega * pesoSaco;
         let diasAutonomia = consumoDiarioTotal > 0 ? (kilosTotalesBodega / consumoDiarioTotal) : 0;
 
@@ -271,7 +330,7 @@
             alerta.style.display = "none";
         }
 
-        // Costos
+        // Operación de Costos
         let costoPorKilo = precioSaco / pesoSaco;
         let costoDiarioTotal = consumoDiarioTotal * costoPorKilo;
         let costoMensualTotal = costoDiarioTotal * 30;
@@ -280,6 +339,7 @@
         document.getElementById('gastoMensual').innerText = "$" + costoMensualTotal.toFixed(2);
     }
 
+    // Inicializar cálculos
     calcular();
 </script>
 
