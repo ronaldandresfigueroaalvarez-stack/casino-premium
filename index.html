@@ -24,7 +24,6 @@
             letter-spacing: 1px;
         }
 
-        /* Marcador de Saldo Global */
         .marcador-saldo {
             background: rgba(255, 255, 255, 0.05);
             border: 2px solid #00ffcc;
@@ -38,7 +37,6 @@
             margin-bottom: 25px;
         }
 
-        /* Pestañas de Navegación */
         .tabs {
             display: flex;
             justify-content: center;
@@ -63,7 +61,6 @@
             border-color: #00c6ff;
         }
 
-        /* Contenedores de cada Juego */
         .game-panel {
             display: none;
             max-width: 400px;
@@ -78,7 +75,6 @@
             display: block;
         }
 
-        /* --- ESTILOS DE MAQUINITA (SLOTS) --- */
         .slot-container {
             border: 3px solid #ff0055;
             box-shadow: inset 0 0 20px rgba(255,0,85,0.5), 0 0 15px rgba(255,0,85,0.3);
@@ -126,7 +122,6 @@
             animation: spinReel 0.15s linear infinite;
         }
 
-        /* --- ESTILOS DE LA RULETA --- */
         .wheel-box {
             position: relative;
             width: 280px;
@@ -188,7 +183,6 @@
         .label5 { transform: rotate(270deg); }
         .label6 { transform: rotate(330deg); }
 
-        /* --- ESTILOS DE MINAS --- */
         .grid-minas {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -218,7 +212,6 @@
             cursor: default;
         }
 
-        /* Botones de Acción Generales */
         .btn-action {
             width: 100%;
             background: linear-gradient(135deg, #ff0055 0%, #d6004b 100%);
@@ -337,7 +330,6 @@
     <audio id="sndRuleta" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-84.wav" preload="auto"></audio>
 
     <script>
-        // VARIABLES GLOBALES
         let saldoActual = 10.00;
         const displaySaldo = document.getElementById('displaySaldo');
 
@@ -346,31 +338,46 @@
         const sndPerder = document.getElementById('sndPerder');
         const sndRuleta = document.getElementById('sndRuleta');
 
-        // REPRODUCCIÓN COMPATIBLE CON MÓVILES
+        let audiosDesbloqueados = false;
+
+        // Activa el audio en celulares tras el primer toque a la pantalla
+        function desbloquearAudios() {
+            if (audiosDesbloqueados) return;
+            const sonidos = [sndApostar, sndPremio, sndPerder, sndRuleta];
+            sonidos.forEach(sonido => {
+                if (sonido) {
+                    sonido.muted = false;
+                    sonido.play().then(() => {
+                        sonido.pause();
+                        sonido.currentTime = 0;
+                    }).catch(e => console.log("Desbloqueando...", e));
+                }
+            });
+            audiosDesbloqueados = true;
+        }
+
+        document.addEventListener('click', desbloquearAudios);
+        document.addEventListener('touchstart', desbloquearAudios);
+
         function reproducirSonido(audioNode) {
             if (audioNode) {
                 audioNode.currentTime = 0;
+                audioNode.muted = false;
                 let playPromise = audioNode.play();
                 if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.log("Audio esperando interacción del usuario:", error);
-                    });
+                    playPromise.catch(error => console.log("Error de reproducción:", error));
                 }
             }
         }
 
-        // FUNCIÓN DE PAPELITOS CAYENDO (CONFETTI)
         function lanzarPapelitos() {
             if (typeof confetti === 'function') {
-                confetti({
-                    particleCount: 150,
-                    spread: 80,
-                    origin: { y: 0.6 }
-                });
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
             }
         }
 
         function cambiarJuego(juego) {
+            desbloquearAudios();
             document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
             
@@ -402,13 +409,14 @@
             }
         }
 
-        // --- LÓGICA DE MAQUINITA ---
+        // --- MAQUINITA ---
         const iconos = ['🍒', '🍋', '🍉', '💎', '👑', '⭐'];
         const btnApostarSlots = document.getElementById('btnApostarSlots');
         const mensajeSlots = document.getElementById('mensajeSlots');
 
         if(btnApostarSlots) {
             btnApostarSlots.addEventListener('click', () => {
+                desbloquearAudios();
                 if (saldoActual < 1.00) { mensajeSlots.textContent = "❌ Saldo insuficiente."; return; }
                 
                 saldoActual -= 1.00;
@@ -461,7 +469,7 @@
             displaySaldo.textContent = saldoActual.toFixed(2);
         }
 
-        // --- LÓGICA DE LA RULETA ---
+        // --- RULETA ---
         const wheel = document.getElementById('wheel');
         const btnGirarRuleta = document.getElementById('btnGirarRuleta');
         const mensajeRuleta = document.getElementById('mensajeRuleta');
@@ -469,6 +477,7 @@
 
         if(btnGirarRuleta) {
             btnGirarRuleta.addEventListener('click', () => {
+                desbloquearAudios();
                 if (saldoActual < 1.00) { mensajeRuleta.textContent = "❌ Saldo insuficiente."; return; }
                 
                 saldoActual -= 1.00;
@@ -513,7 +522,7 @@
             });
         }
 
-        // --- LÓGICA DE MINAS ---
+        // --- MINAS ---
         const tablero = document.getElementById('tablero');
         const btnIniciarMinas = document.getElementById('btnIniciarMinas');
         const btnRetirarMinas = document.getElementById('btnRetirarMinas');
@@ -547,6 +556,7 @@
 
         if(btnIniciarMinas) {
             btnIniciarMinas.addEventListener('click', () => {
+                desbloquearAudios();
                 if (juegoMinasActivo) return;
                 if (saldoActual < 1.00) { mensajeMinas.textContent = "❌ Saldo insuficiente."; return; }
                 
