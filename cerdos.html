@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Calculadora Porcina Premium</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px 10px;
+            background-color: #0f172a;
+            background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 26px;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+            margin-bottom: 5px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 25px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            max-width: 420px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tab-button {
+            flex: 1;
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            padding: 12px 8px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tab-button.active {
+            background: #22c55e;
+            color: #052e16;
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+            border-color: #22c55e;
+        }
+
+        .tab-icon {
+            font-size: 20px;
+        }
+
+        .game-panel {
+            display: none;
+            max-width: 400px;
+            margin: 0 auto;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid #334155;
+            border-radius: 24px;
+            padding: 25px 20px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            box-sizing: border-box;
+        }
+
+        .game-panel.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            font-weight: 600;
+            padding-left: 4px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #22c55e;
+        }
+
+        .results-box {
+            background: #0f172a;
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 25px;
+            border: 1px dashed #334155;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .result-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #22c55e;
+        }
+
+        .alert-card {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 14px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #4ade80;
+            font-weight: 600;
+        }
+
+        .alert-card.danger {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CONTROL PORCINO</h1>
+    <div class="subtitle">Calculadora de Alimento Premium</div>
+
+    <div class="tabs">
+        <button id="tabRacion" class="tab-button active" onclick="cambiarSeccion('racion')">
+            <span class="tab-icon">📊</span>
+            <span>Ración</span>
+        </button>
+        <button id="tabBodega" class="tab-button" onclick="cambiarSeccion('bodega')">
+            <span class="tab-icon">📦</span>
+            <span>Bodega</span>
+        </button>
+        <button id="tabCostos" class="tab-button" onclick="cambiarSeccion('costos')">
+            <span class="tab-icon">💵</span>
+            <span>Costos</span>
+        </button>
+    </div>
+
+    <div id="panel-racion" class="game-panel active">
+        <div class="input-group">
+            <label for="cantidadCerdos">Número de Cerdos en Corral</label>
+            <input type="number" id="cantidadCerdos" value="10" min="1" oninput="calcularTodo()">
+        </div>
+
+        <div class="input-group">
+            <label for="etapaCerdo">Etapa de Producción</label>
+            <select id="etapaCerdo" onchange="calcularTodo()">
+                <option value="0.5">🐷 Inicio (0.50 kg/día por cerdo)</option>
+                <option value="1.5">🐷 Crecimiento (1.50 kg/día por cerdo)</option>
+                <option value="2.8" selected>🐷 Engorde (2.80 kg/día por cerdo)</option>
+            </select>
+        </div>
+
+        <div class="results-box">
+            <div class="result-row">
+                <span class="result-label">Consumo Diario Total:</span>
+                <span class="result-value" id="resKilosDiarios">0.00 Kg</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Sacos Diarios Necesarios:</span>
+                <span class="result-value" id="resSacosDiarios">0.00 Sacos</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="panel-bodega" class="game-panel">
+        <div class="input-group">
+            <label for="sacosBodega">Sacos Disponibles en Bodega</label>
+            <input type="number" id="sacosBodega" value="5" min="0" oninput="calcularTodo()">
+        </div>
+
+        <div class="results-box">
+            <div class="result-row">
+                <span class="result-label">Alimento en Inventario:</span>
+                <span class="result-value" id="resKilosBodega" style="color: #60a5fa;">0.00 Kg</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Días de Comida Restantes:</span>
+                <span class="result-value" id="resDiasComida" style="color: #60a5fa;">0 Días</span>
+            </div>
+        </div>
+
+        <div id="alertaBodega" class="alert-card">
+            Inventario estable para los próximos días.
+        </div>
+    </div>
+
+    <div id="panel-costos" class="game-panel">
+        <div class="input-group">
+            <label for="precioSaco">Precio por Saco de Alimento ($)</label>
+            <input type="number" id="precioSaco" value="30.00" min="0" step="0.01" oninput="calcularTodo()">
+        </div>
+
+        <div class="results-box">
+            <div class="result-row">
+                <span class="result-label">Gasto de Alimento por Día:</span>
+                <span class="result-value" id="resCostoDiario" style="color: #eab308;">$0.00</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Valor Total del Inventario:</span>
+                <span class="result-value" id="resValorInventario" style="color: #eab308;">$0.00</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN CONSTANTE
+        const KG_POR_SACO = 40; // Ajusta este número si tus sacos son de otro peso (ej. 45 o 50)
+
+        function cambiarSeccion(seccion) {
+            document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+            
+            if(seccion === 'racion') {
+                document.getElementById('panel-racion').classList.add('active');
+                document.getElementById('tabRacion').classList.add('active');
+            } else if(seccion === 'bodega') {
+                document.getElementById('panel-bodega').classList.add('active');
+                document.getElementById('tabBodega').classList.add('active');
+            } else if(seccion === 'costos') {
+                document.getElementById('panel-costos').classList.add('active');
+                document.getElementById('tabCostos').classList.add('active');
+            }
+            calcularTodo();
+        }
+
+        function calcularTodo() {
+            // 1. OBTENCIÓN DE DATOS DE LOS INPUTS
+            const cerdos = parseFloat(document.getElementById('cantidadCerdos').value) || 0;
+            const consumoPorCerdo = parseFloat(document.getElementById('etapaCerdo').value) || 0;
+            const sacosBodega = parseFloat(document.getElementById('sacosBodega').value) || 0;
+            const precioSaco = parseFloat(document.getElementById('precioSaco').value) || 0;
+
+            // 2. CÁLCULOS MATEMÁTICOS DE RACIÓN
+            const kilosDiariosTotales = cerdos * consumoPorCerdo;
+            const sacosDiariosTotales = kilosDiariosTotales / KG_POR_SACO;
+
+            // Mostrar resultados de Ración
+            document.getElementById('resKilosDiarios').textContent = kilosDiariosTotales.toFixed(2) + ' Kg';
+            document.getElementById('resSacosDiarios').textContent = sacosDiariosTotales.toFixed(2) + ' Sacos';
+
+            // 3. CÁLCULOS DE INVENTARIO / BODEGA
+            const kilosTotalesBodega = sacosBodega * KG_POR_SACO;
+            let diasRestantes = 0;
+            
+            if (sacosDiariosTotales > 0) {
+                diasRestantes = sacosBodega / sacosDiariosTotales;
+            } else {
+                diasRestantes = sacosBodega > 0 ? Infinity : 0;
+            }
+
+            // Mostrar resultados de Bodega
+            document.getElementById('resKilosBodega').textContent = kilosTotalesBodega.toFixed(2) + ' Kg';
+            
+            const txtDias = document.getElementById('resDiasComida');
+            const tarjetaAlerta = document.getElementById('alertaBodega');
+
+            if(diasRestantes === Infinity) {
+                txtDias.textContent = 'Sin consumo activo';
+                tarjetaAlerta.textContent = 'Agrega cerdos en la ración para calcular la duración.';
+                tarjetaAlerta.classList.remove('danger');
+            } else {
+                txtDias.textContent = Math.floor(diasRestantes) + ' Días';
+                
+                // Sistema de Alertas Automáticas Inteligentes
+                if (diasRestantes <= 0) {
+                    tarjetaAlerta.textContent = '❌ No te queda alimento en bodega.';
+                    tarjetaAlerta.classList.add('danger');
+                } else if (diasRestantes < 3) {
+                    tarjetaAlerta.textContent = `⚠️ ¡Alerta! Alimento crítico. Te queda menos de 3 días (${Math.floor(diasRestantes)} d)`;
+                    tarjetaAlerta.classList.add('danger');
+                } else {
+                    tarjetaAlerta.textContent = `✅ Inventario óptimo para ${Math.floor(diasRestantes)} días de producción.`;
+                    tarjetaAlerta.classList.remove('danger');
+                }
+            }
+
+            // 4. CÁLCULOS DE COSTOS
+            const costoDiario = sacosDiariosTotales * precioSaco;
+            const valorInventario = sacosBodega * precioSaco;
+
+            // Mostrar resultados de Costos
+            document.getElementById('resCostoDiario').textContent = '$' + costoDiario.toFixed(2);
+            document.getElementById('resValorInventario').textContent = '$' + valorInventario.toFixed(2);
+        }
+
+        // Ejecutar los cálculos automáticamente la primera vez que se abra la aplicación
+        window.onload = function() {
+            calcularTodo();
+        };
+    </script>
+</body>
+</html>
