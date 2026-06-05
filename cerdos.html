@@ -14,6 +14,7 @@
             --primary-dark: #4e342e;
             --accent-orange: #e64a19;
             --accent-green: #2e7d32;
+            --accent-blue: #1565c0;
         }
 
         body {
@@ -149,12 +150,12 @@
         }
 
         .card-weight {
-            background: #fdfaf9;
+            background: #f0f7ff;
             padding: 18px;
             border-radius: 16px;
             margin-top: 14px;
-            border-left: 5px solid var(--primary);
-            box-shadow: 0 4px 12px rgba(141, 110, 99, 0.05);
+            border-left: 5px solid var(--accent-blue);
+            box-shadow: 0 4px 12px rgba(21, 101, 192, 0.05);
         }
 
         .result-row {
@@ -162,17 +163,24 @@
             justify-content: space-between;
             align-items: center;
             margin: 10px 0;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
-            color: var(--primary-dark);
+            color: var(--text-dark);
+        }
+
+        .result-row.highlight {
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 10px;
+            margin-top: 12px;
         }
 
         .result-row:first-child { margin-top: 0; }
         .result-row:last-child { margin-bottom: 0; }
 
-        .val-orange { font-weight: 850; color: var(--accent-orange); font-size: 17px; }
-        .val-brown { font-weight: 850; color: var(--primary-dark); font-size: 17px; }
-        .val-green { font-weight: 850; color: var(--accent-green); font-size: 17px; }
+        .val-orange { font-weight: 800; color: var(--accent-orange); font-size: 16px; }
+        .val-blue { font-weight: 800; color: var(--accent-blue); font-size: 16px; }
+        .val-green { font-weight: 800; color: var(--accent-green); font-size: 16px; }
+        .val-dark { font-weight: 850; color: var(--primary-dark); font-size: 17px; }
 
         .alert {
             color: #b91c1c;
@@ -209,33 +217,33 @@
             <label>Etapa y Semana de Desarrollo:</label>
             <select id="etapa" onchange="calcular()">
                 <optgroup label="🐷 Preiniciador">
-                    <option value="0.22" data-weight="6.00" data-expected="73.3">Semana 1 (0.22 kg/día)</option>
-                    <option value="0.37" data-weight="7.33" data-expected="92.9">Semana 2 (0.37 kg/día)</option>
-                    <option value="0.53" data-weight="9.29" data-expected="120.2">Semana 3 (0.53 kg/día)</option>
+                    <option value="0.22" data-weight="6.00" data-expected="7.33">Semana 1 (0.22 kg/día)</option>
+                    <option value="0.37" data-weight="7.33" data-expected="9.29">Semana 2 (0.37 kg/día)</option>
+                    <option value="0.53" data-weight="9.29" data-expected="12.02">Semana 3 (0.53 kg/día)</option>
                 </optgroup>
                 <optgroup label="🐖 Iniciación">
-                    <option value="0.73" data-weight="12.02" data-expected="156.6">Semana 4 (0.73 kg/día)</option>
-                    <option value="0.88" data-weight="15.66" data-expected="200.7">Semana 5 (0.88 kg/día)</option>
-                    <option value="1.00" data-weight="20.07" data-expected="249.7" selected>Semana 6 (1.00 kg/día)</option>
+                    <option value="0.73" data-weight="12.02" data-expected="15.66">Semana 4 (0.73 kg/día)</option>
+                    <option value="0.88" data-weight="15.66" data-expected="20.07">Semana 5 (0.88 kg/día)</option>
+                    <option value="1.00" data-weight="20.07" data-expected="24.97" selected>Semana 6 (1.00 kg/día)</option>
                 </optgroup>
                 <optgroup label="🐖 Levante">
-                    <option value="1.35" data-weight="25.00" data-expected="302.0">Semana 7 (1.35 kg/día)</option>
-                    <option value="1.50" data-weight="30.20" data-expected="357.0">Semana 8 (1.50 kg/día)</option>
-                    <option value="1.65" data-weight="35.70" data-expected="414.0">Semana 9 (1.65 kg/día)</option>
-                    <option value="1.80" data-weight="41.40" data-expected="472.0">Semana 10 (1.80 kg/día)</option>
-                    <option value="1.95" data-weight="47.20" data-expected="531.0">Semana 11 (1.95 kg/día)</option>
+                    <option value="1.35" data-weight="25.00" data-expected="30.20">Semana 7 (1.35 kg/día)</option>
+                    <option value="1.50" data-weight="30.20" data-expected="35.70">Semana 8 (1.50 kg/día)</option>
+                    <option value="1.65" data-weight="35.70" data-expected="41.40">Semana 9 (1.65 kg/día)</option>
+                    <option value="1.80" data-weight="41.40" data-expected="47.20">Semana 10 (1.80 kg/día)</option>
+                    <option value="1.95" data-weight="47.20" data-expected="53.10">Semana 11 (1.95 kg/día)</option>
                 </optgroup>
                 <optgroup label="🥩 Engorde">
-                    <option value="2.06" data-weight="53.10" data-expected="593.0">Semana 12 (2.06 kg/día)</option>
-                    <option value="2.15" data-weight="59.30" data-expected="655.0">Semana 13 (2.15 kg/día)</option>
-                    <option value="2.25" data-weight="65.60" data-expected="720.0">Semana 14 (2.25 kg/día)</option>
-                    <option value="2.35" data-weight="72.00" data-expected="786.0">Semana 15 (2.35 kg/día)</option>
-                    <option value="2.45" data-weight="78.60" data-expected="853.0">Semana 16 (2.45 kg/día)</option>
-                    <option value="2.55" data-weight="85.30" data-expected="922.0">Semana 17 (2.55 kg/día)</option>
-                    <option value="2.65" data-weight="92.20" data-expected="992.0">Semana 18 (2.65 kg/día)</option>
-                    <option value="2.75" data-weight="99.20" data-expected="1063.0">Semana 19 (2.75 kg/día)</option>
-                    <option value="2.80" data-weight="106.30" data-expected="1135.0">Semana 20 (2.80 kg/día)</option>
-                    <option value="2.85" data-weight="113.50" data-expected="1207.0">Semana 21 (2.85 kg/día)</option>
+                    <option value="2.06" data-weight="53.10" data-expected="59.30">Semana 12 (2.06 kg/día)</option>
+                    <option value="2.15" data-weight="59.30" data-expected="65.50">Semana 13 (2.15 kg/día)</option>
+                    <option value="2.25" data-weight="65.60" data-expected="72.00">Semana 14 (2.25 kg/día)</option>
+                    <option value="2.35" data-weight="72.00" data-expected="78.60">Semana 15 (2.35 kg/día)</option>
+                    <option value="2.45" data-weight="78.60" data-expected="85.30">Semana 16 (2.45 kg/día)</option>
+                    <option value="2.55" data-weight="85.30" data-expected="92.20">Semana 17 (2.55 kg/día)</option>
+                    <option value="2.65" data-weight="92.20" data-expected="99.20">Semana 18 (2.65 kg/día)</option>
+                    <option value="2.75" data-weight="99.20" data-expected="106.30">Semana 19 (2.75 kg/día)</option>
+                    <option value="2.80" data-weight="106.30" data-expected="113.50">Semana 20 (2.80 kg/día)</option>
+                    <option value="2.85" data-weight="113.50" data-expected="120.70">Semana 21 (2.85 kg/día)</option>
                 </optgroup>
             </select>
         </div>
@@ -246,8 +254,9 @@
         </div>
 
         <div class="card-weight">
-            <div class="result-row"><span>Peso Promedio Actual:</span><span class="val-brown" id="pesoActualUnidad">0.00 Kg</span></div>
-            <div class="result-row"><span>Peso Esperado Lote (Meta):</span><span class="val-brown" id="pesoEsperadoTotal">0.00 Kg</span></div>
+            <div class="result-row"><span>Peso Inicial (Semana):</span><span class="val-blue" id="pesoActualUnidad">0.00 Kg</span></div>
+            <div class="result-row"><span>Peso Meta por Cerdo (Semanal):</span><span class="val-blue" id="pesoEsperadoUnidad">0.00 Kg</span></div>
+            <div class="result-row highlight"><span>Meta Total Esperada del Lote:</span><span class="val-dark" id="pesoEsperadoTotal">0.00 Kg</span></div>
         </div>
     </div>
 
@@ -297,9 +306,8 @@
         let selectEtapa = document.getElementById('etapa');
         let consumoPorCerdo = parseFloat(selectEtapa.value) || 0;
         
-        // Atributos extraídos de la tabla real de Excel cargada
         let pesoActualPorCerdo = parseFloat(selectEtapa.options[selectEtapa.selectedIndex].getAttribute('data-weight')) || 0;
-        let pesoEsperadoLote = parseFloat(selectEtapa.options[selectEtapa.selectedIndex].getAttribute('data-expected')) || 0;
+        let pesoEsperadoIndividualFinal = parseFloat(selectEtapa.options[selectEtapa.selectedIndex].getAttribute('data-expected')) || 0;
 
         let sacosBodega = parseFloat(document.getElementById('sacosBodega').value) || 0;
         let pesoSaco = parseFloat(document.getElementById('pesoSaco').value) || 40;
@@ -312,9 +320,10 @@
         document.getElementById('consumoDiario').innerText = consumoDiarioTotal.toFixed(2) + " Kg";
         document.getElementById('sacosDiarios').innerText = sacosDiariosReq.toFixed(2) + " Sacos";
 
-        // Mapeo de Pesos (Actual Individual vs Meta Esperada Total del Lote)
+        // Mapeo de Pesos Educativo e Informativo Semanal
         document.getElementById('pesoActualUnidad').innerText = pesoActualPorCerdo.toFixed(2) + " Kg";
-        document.getElementById('pesoEsperadoTotal').innerText = (cerdos > 0 ? (pesoEsperadoLote * (cerdos/10)) : 0).toFixed(1) + " Kg";
+        document.getElementById('pesoEsperadoUnidad').innerText = pesoEsperadoIndividualFinal.toFixed(2) + " Kg";
+        document.getElementById('pesoEsperadoTotal').innerText = (cerdos * pesoEsperadoIndividualFinal).toFixed(2) + " Kg";
 
         // Operación de Bodega
         let kilosTotalesBodega = sacosBodega * pesoSaco;
@@ -339,7 +348,6 @@
         document.getElementById('gastoMensual').innerText = "$" + costoMensualTotal.toFixed(2);
     }
 
-    // Inicializar cálculos
     calcular();
 </script>
 
