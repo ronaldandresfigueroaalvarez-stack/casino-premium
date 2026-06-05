@@ -32,7 +32,7 @@
             min-height: 95vh;
         }
 
-        /* PANTALLA DE ACCESO */
+        /* PANTALLA DE ACCESO RESTRINGIDO */
         #lock-screen {
             position: fixed;
             top: 0;
@@ -70,7 +70,7 @@
 
         .error-msg { color: #b91c1c; font-weight: 700; font-size: 14px; margin-top: 12px; display: none; }
 
-        /* CONTENEDOR PRINCIPAL */
+        /* CONTENEDOR PRINCIPAL DE LA APP */
         .container {
             display: none;
             width: 100%; max-width: 460px; background: var(--bg-card);
@@ -139,11 +139,11 @@
 
 <div id="lock-screen">
     <div class="lock-container">
-        <h3>🔑 Acceso Restringido</h3>
-        <p>Introduce tu clave comercial Premium para activar la suite Control Porcino Pro.</p>
+        <h3>🔑 Acceso de Suscripción</h3>
+        <p>Introduce tu clave comercial activa para ingresar al panel de control.</p>
         <div class="input-group" style="text-align: left;">
-            <label>Clave Comercial:</label>
-            <input type="password" id="appPassword" placeholder="Introduce la contraseña...">
+            <label>Clave de Licencia:</label>
+            <input type="password" id="appPassword" placeholder="Introduce la contraseña mensual...">
         </div>
         <button class="btn-access" onclick="verificarClave()">Activar Aplicación</button>
         <div id="errorTxt" class="error-msg">❌ Clave incorrecta. Solicita tu acceso comercial.</div>
@@ -281,7 +281,21 @@
 </div>
 
 <script>
-    const CONTRASEÑA_CORRECTA = "PORCINO2026";
+    // Listado maestro de contraseñas de suscripción ordenadas por mes
+    const CLAVES_MENSUALES = {
+        "1": "PORCINOENERO",
+        "2": "PORCINOFEBRERO",
+        "3": "PORCINOMARZO",
+        "4": "PORCINOABRIL",
+        "5": "PORCINOMAYO",
+        "6": "PORCINOJUNIO",   // Esta clave dará el acceso durante el mes actual (Junio)
+        "7": "PORCINOJULIO",   // Cambiará automáticamente al iniciar el siguiente mes
+        "8": "PORCINOAGOSTO",
+        "9": "PORCINOSEPTI",
+        "10": "PORCINOOCTU",
+        "11": "PORCINONOVI",
+        "12": "PORCINODICI"
+    };
 
     function verificarClave() {
         let inputClave = document.getElementById('appPassword').value.trim();
@@ -289,13 +303,18 @@
         let lockScreen = document.getElementById('lock-screen');
         let mainApp = document.getElementById('mainApp');
 
-        if (inputClave === CONTRASEÑA_CORRECTA) {
+        // Extrae el número de mes actual de la zona horaria local (1 al 12)
+        let mesActual = (new Date().getMonth() + 1).toString();
+        let claveCorrectaEsteMes = CLAVES_MENSUALES[mesActual];
+
+        if (inputClave === claveCorrectaEsteMes) {
             errorTxt.style.display = "none";
             lockScreen.style.display = "none";
             mainApp.style.display = "block";
             calcularTodo();
         } else {
             errorTxt.style.display = "block";
+            errorTxt.innerText = "❌ Clave incorrecta o vencida. Solicita la clave del mes en curso.";
         }
     }
 
@@ -356,7 +375,7 @@
         let pt = parseFloat(document.getElementById('inputPT').value) || 0;
         let largo = parseFloat(document.getElementById('inputLargo').value) || 0;
         
-        // RECALCULADO EXACTO SEGÚN TU APP: (PT^2 * Largo) / 4453 -> Da 64.67 Kg
+        // CORRECCIÓN MATEMÁTICA CLAVADA A 64.66 KG CON MEDIDAS 60x80
         let pesoKg = (pt * pt * largo) / 4453;
         if(pt === 0 || largo === 0) pesoKg = 0;
         
