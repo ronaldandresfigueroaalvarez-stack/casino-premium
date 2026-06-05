@@ -281,9 +281,9 @@
     <span class="subtitle">Gestión Tecnificada de Alimento y Peso</span>
     
     <div class="tabs">
-        <button class="tab active" onclick="switchTab('raciones')">🐖 Raciones</button>
-        <button class="tab" onclick="switchTab('bodega')">📦 Bodega</button>
-        <button class="tab" onclick="switchTab('costos')">💰 Costos</button>
+        <button class="tab active" onclick="switchTab(this, 'raciones')">🐖 Raciones</button>
+        <button class="tab" onclick="switchTab(this, 'bodega')">📦 Bodega</button>
+        <button class="tab" onclick="switchTab(this, 'costos')">💰 Costos</button>
     </div>
 
     <div id="raciones" class="panel active">
@@ -374,12 +374,13 @@
     const CONTRASEÑA_CORRECTA = "PORCINO2026";
 
     function verificarClave() {
-        let inputClave = document.getElementById('appPassword').value;
+        let inputClave = document.getElementById('appPassword').value.trim();
         let errorTxt = document.getElementById('errorTxt');
         let lockScreen = document.getElementById('lock-screen');
         let mainApp = document.getElementById('mainApp');
 
         if (inputClave === CONTRASEÑA_CORRECTA) {
+            errorTxt.style.display = "none";
             lockScreen.style.display = "none";
             mainApp.style.display = "block";
             calcular();
@@ -388,11 +389,11 @@
         }
     }
 
-    function switchTab(tabId) {
+    function switchTab(element, tabId) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
         
-        event.currentTarget.classList.add('active');
+        element.classList.add('active');
         document.getElementById(tabId).classList.add('active');
     }
 
