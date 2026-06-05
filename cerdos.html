@@ -371,7 +371,6 @@
 </div>
 
 <script>
-    // 🔑 ESTA ES TU CONTRASEÑA MASTER COMERCIAL (Cámbiala aquí si quieres)
     const CONTRASEÑA_CORRECTA = "PORCINO2026";
 
     function verificarClave() {
@@ -381,11 +380,11 @@
         let mainApp = document.getElementById('mainApp');
 
         if (inputClave === CONTRASEÑA_CORRECTA) {
-            lockScreen.style.display = "none"; // Oculta bloqueo
-            mainApp.style.display = "block";   // Muestra app
+            lockScreen.style.display = "none";
+            mainApp.style.display = "block";
             calcular();
         } else {
-            errorTxt.style.display = "block";  // Muestra error
+            errorTxt.style.display = "block";
         }
     }
 
