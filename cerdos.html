@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Porcina Premium</title>
+    <title>Súper App Porcina Pro</title>
     <style>
         :root {
             --bg-main: #d7ccc8;
@@ -15,20 +15,21 @@
             --accent-orange: #e64a19;
             --accent-green: #2e7d32;
             --accent-blue: #1565c0;
+            --accent-purple: #6a1b9a;
         }
 
         body {
             text-align: center;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             background-color: var(--bg-main);
             background: radial-gradient(circle, #efebe9 0%, #d7ccc8 100%);
             color: var(--text-dark);
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 90vh;
+            min-height: 95vh;
         }
 
         /* PANTALLA DE BLOQUEO */
@@ -85,11 +86,6 @@
             transition: all 0.2s ease;
         }
 
-        .btn-access:hover {
-            background: #1b5e20;
-            transform: translateY(-1px);
-        }
-
         .error-msg {
             color: #b91c1c;
             font-weight: 700;
@@ -98,167 +94,96 @@
             display: none;
         }
 
-        /* CONTENEDOR PRINCIPAL DE LA APP */
+        /* CONTENEDOR PRINCIPAL */
         .container {
-            display: none; /* Oculto por defecto hasta poner la clave */
+            display: none; /* Oculto hasta poner la clave */
             width: 100%;
-            max-width: 440px;
+            max-width: 460px;
             background: var(--bg-card);
-            padding: 30px 24px;
+            padding: 25px 20px;
             border-radius: 24px;
             box-shadow: 0 16px 40px rgba(74, 50, 42, 0.15);
             border: 1px solid #bcaaa4;
             box-sizing: border-box;
-            animation: fadeIn 0.5s ease forwards;
+            animation: fadeIn 0.4s ease forwards;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
+            from { opacity: 0; transform: scale(0.97); }
             to { opacity: 1; transform: scale(1); }
         }
 
-        h2 {
-            margin: 0 0 6px 0;
-            color: var(--primary-dark);
-            font-size: 26px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 800;
-        }
+        h2 { margin: 0 0 4px 0; color: var(--primary-dark); font-size: 24px; font-weight: 800; text-transform: uppercase; }
+        .subtitle { font-size: 12px; color: var(--text-med); margin-bottom: 20px; display: block; font-weight: 500; }
 
-        .subtitle {
-            font-size: 13px;
-            color: var(--text-med);
-            margin-bottom: 24px;
-            display: block;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-
+        /* PESTAÑAS (MÓVIL FRIENDLY) */
         .tabs {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            margin-bottom: 20px;
             background: #f5f5f5;
-            padding: 6px;
-            border-radius: 16px;
+            padding: 4px;
+            border-radius: 14px;
             border: 1px solid #e0e0e0;
         }
 
         .tab {
-            flex: 1;
-            padding: 12px 8px;
+            padding: 10px 2px;
             cursor: pointer;
             background: none;
             border: none;
             color: #757575;
             font-weight: 700;
-            border-radius: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            transition: all 0.2s ease;
         }
 
         .tab.active {
             background: var(--primary);
             color: white;
-            box-shadow: 0 6px 14px rgba(141, 110, 99, 0.3);
+            box-shadow: 0 4px 10px rgba(141, 110, 99, 0.25);
         }
 
-        .panel {
-            display: none;
-            text-align: left;
-        }
+        .panel { display: none; text-align: left; }
+        .panel.active { display: block; }
 
-        .panel.active {
-            display: block;
-        }
+        .input-group { margin-bottom: 14px; }
+        .input-row { display: flex; gap: 10px; margin-bottom: 14px; }
+        .input-row .input-group { flex: 1; margin-bottom: 0; }
 
-        .input-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            font-weight: 700;
-            display: block;
-            margin-bottom: 6px;
-            color: var(--primary-dark);
-            font-size: 14px;
-        }
-
+        label { font-weight: 700; display: block; margin-bottom: 5px; color: var(--primary-dark); font-size: 13px; }
         input, select {
-            width: 100%;
-            padding: 14px 16px;
-            box-sizing: border-box;
-            border-radius: 14px;
-            border: 1px solid #cbd5e1;
-            background: #f8fafc;
-            color: var(--text-dark);
-            font-size: 16px;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            width: 100%; padding: 12px; box-sizing: border-box; border-radius: 12px;
+            border: 1px solid #cbd5e1; background: #f8fafc; color: var(--text-dark);
+            font-size: 15px; font-weight: 500;
+        }
+        input:focus, select:focus { border-color: var(--primary); outline: none; background: #fff; }
+
+        .btn-action {
+            width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 15px;
+            font-weight: 700; color: white; cursor: pointer; transition: all 0.2s ease;
         }
 
-        input:focus, select:focus {
-            border-color: var(--primary);
-            outline: none;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(141, 110, 99, 0.15);
-        }
+        .card-result { background: #fff5f2; padding: 15px; border-radius: 14px; margin-top: 12px; border-left: 5px solid var(--accent-orange); }
+        .card-weight { background: #f0f7ff; padding: 15px; border-radius: 14px; margin-top: 12px; border-left: 5px solid var(--accent-blue); }
+        .card-purple { background: #faf5ff; padding: 15px; border-radius: 14px; margin-top: 12px; border-left: 5px solid var(--accent-purple); }
+        
+        .result-row { display: flex; justify-content: space-between; margin: 8px 0; font-size: 13.5px; font-weight: 500; }
+        .result-row.highlight { border-top: 1px dashed #cbd5e1; padding-top: 8px; margin-top: 10px; }
+        
+        .val-orange { font-weight: 800; color: var(--accent-orange); }
+        .val-blue { font-weight: 800; color: var(--accent-blue); }
+        .val-green { font-weight: 800; color: var(--accent-green); }
+        .val-purple { font-weight: 800; color: var(--accent-purple); }
+        .val-dark { font-weight: 800; color: var(--primary-dark); }
 
-        .card-result {
-            background: #fff5f2;
-            padding: 18px;
-            border-radius: 16px;
-            margin-top: 16px;
-            border-left: 5px solid var(--accent-orange);
-            box-shadow: 0 4px 12px rgba(230, 74, 25, 0.05);
-        }
-
-        .card-weight {
-            background: #f0f7ff;
-            padding: 18px;
-            border-radius: 16px;
-            margin-top: 14px;
-            border-left: 5px solid var(--accent-blue);
-            box-shadow: 0 4px 12px rgba(21, 101, 192, 0.05);
-        }
-
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 10px 0;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-dark);
-        }
-
-        .result-row.highlight {
-            border-top: 1px dashed #cbd5e1;
-            padding-top: 10px;
-            margin-top: 12px;
-        }
-
-        .val-orange { font-weight: 800; color: var(--accent-orange); font-size: 16px; }
-        .val-blue { font-weight: 800; color: var(--accent-blue); font-size: 16px; }
-        .val-green { font-weight: 800; color: var(--accent-green); font-size: 16px; }
-        .val-dark { font-weight: 850; color: var(--primary-dark); font-size: 17px; }
-
-        .alert {
-            color: #b91c1c;
-            font-weight: 700;
-            background: #fef2f2;
-            padding: 12px;
-            border-radius: 12px;
-            margin-top: 14px;
-            text-align: center;
-            border: 1px solid #fca5a5;
-            font-size: 14px;
-        }
+        /* HISTORIAL */
+        .history-box { max-height: 200px; overflow-y: auto; background: #fcfcfc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px; margin-top: 12px; }
+        .history-item { font-size: 12px; padding: 8px; border-bottom: 1px solid #edf2f7; line-height: 1.4; color: #4a5568; }
+        .history-item:last-child { border-bottom: none; }
+        .alert { color: #b91c1c; font-weight: 700; background: #fef2f2; padding: 10px; border-radius: 12px; margin-top: 12px; text-align: center; font-size: 13px; border: 1px solid #fca5a5; }
     </style>
 </head>
 <body>
@@ -266,9 +191,9 @@
 <div id="lock-screen">
     <div class="lock-container">
         <h3>🔑 Acceso Restringido</h3>
-        <p>Introduce tu clave de activación Premium para usar la calculadora de Control Porcino.</p>
+        <p>Introduce tu clave comercial Premium para activar la suite Control Porcino Pro.</p>
         <div class="input-group" style="text-align: left;">
-            <label>Clave de Licencia:</label>
+            <label>Clave Comercial:</label>
             <input type="password" id="appPassword" placeholder="Introduce la contraseña...">
         </div>
         <button class="btn-access" onclick="verificarClave()">Activar Aplicación</button>
@@ -277,24 +202,24 @@
 </div>
 
 <div class="container" id="mainApp">
-    <h2>Control Porcino</h2>
-    <span class="subtitle">Gestión Tecnificada de Alimento y Peso</span>
+    <h2>Control Porcino Pro</h2>
+    <span class="subtitle">Gestión unificada: Alimento, Pesaje y Medicación</span>
     
     <div class="tabs">
-        <button class="tab active" onclick="switchTab(this, 'raciones')">🐖 Raciones</button>
-        <button class="tab" onclick="switchTab(this, 'bodega')">📦 Bodega</button>
-        <button class="tab" onclick="switchTab(this, 'costos')">💰 Costos</button>
+        <button class="tab active" onclick="switchTab(this, 'tab-raciones')">🐖 Alimento</button>
+        <button class="tab" onclick="switchTab(this, 'tab-bodega')">📦 Bodega</button>
+        <button class="tab" onclick="switchTab(this, 'tab-pesaje')">⚖️ Pesaje</button>
+        <button class="tab" onclick="switchTab(this, 'tab-costos')">💰 Costos</button>
     </div>
 
-    <div id="raciones" class="panel active">
+    <div id="tab-raciones" class="panel active">
         <div class="input-group">
             <label>Número de Cerdos en Corral:</label>
-            <input type="number" id="cerdos" value="10" min="0" oninput="calcular()">
+            <input type="number" id="cerdos" value="10" min="0" oninput="calcularTodo()">
         </div>
-
         <div class="input-group">
             <label>Etapa y Semana de Desarrollo:</label>
-            <select id="etapa" onchange="calcular()">
+            <select id="etapa" onchange="calcularTodo()">
                 <optgroup label="🐷 Preiniciador">
                     <option value="0.22" data-weight="6.00" data-expected="7.33">Semana 1 (0.22 kg/día)</option>
                     <option value="0.37" data-weight="7.33" data-expected="9.29">Semana 2 (0.37 kg/día)</option>
@@ -326,46 +251,82 @@
                 </optgroup>
             </select>
         </div>
-
         <div class="card-result">
             <div class="result-row"><span>Consumo Diario Total:</span><span class="val-orange" id="consumoDiario">0.00 Kg</span></div>
-            <div class="result-row"><span>Sacos Diarios Necesarios:</span><span class="val-orange" id="sacosDiarios">0.00 Sacos</span></div>
+            <div class="result-row"><span>Sacos Diarios Requeridos:</span><span class="val-orange" id="sacosDiarios">0.00 Sacos</span></div>
         </div>
-
         <div class="card-weight">
-            <div class="result-row"><span>Peso Inicial (Semana):</span><span class="val-blue" id="pesoActualUnidad">0.00 Kg</span></div>
-            <div class="result-row"><span>Peso Meta por Cerdo (Semanal):</span><span class="val-blue" id="pesoEsperadoUnidad">0.00 Kg</span></div>
-            <div class="result-row highlight"><span>Meta Total Esperada del Lote:</span><span class="val-dark" id="pesoEsperadoTotal">0.00 Kg</span></div>
+            <div class="result-row"><span>Peso Inicial de Tabla:</span><span class="val-blue" id="pesoActualUnidad">0.00 Kg</span></div>
+            <div class="result-row"><span>Meta Semanal por Cerdo:</span><span class="val-blue" id="pesoEsperadoUnidad">0.00 Kg</span></div>
+            <div class="result-row highlight"><span>Meta Estimada Lote Completo:</span><span class="val-dark" id="pesoEsperadoTotal">0.00 Kg</span></div>
         </div>
     </div>
 
-    <div id="bodega" class="panel">
+    <div id="tab-bodega" class="panel">
         <div class="input-group">
-            <label>Sacos Actuales en Bodega:</label>
-            <input type="number" id="sacosBodega" value="10" min="0" oninput="calcular()">
+            <label>Sacos Disponibles en Bodega:</label>
+            <input type="number" id="sacosBodega" value="15" min="0" oninput="calcularTodo()">
+        </div>
+        <div class="input-group">
+            <label>Peso Neto por Saco (Kg):</label>
+            <input type="number" id="pesoSaco" value="40" min="1" oninput="calcularTodo()">
+        </div>
+        <div class="card-result" style="border-left-color: #ef6c00; background-color: #fff8f1;">
+            <div class="result-row"><span>Alimento Total Disponible:</span><span class="val-orange" id="kilosBodega" style="color:#ef6c00;">0.00 Kg</span></div>
+            <div class="result-row"><span>Autonomía Comercial:</span><span class="val-orange" id="diasAbasto" style="color:#ef6c00;">0 Días</span></div>
+        </div>
+        <div id="alertaBodega" class="alert" style="display:none;">⚠️ ¡Inventario Crítico! Alimento para menos de 3 días.</div>
+    </div>
+
+    <div id="tab-pesaje" class="panel">
+        <div class="input-row">
+            <div class="input-group">
+                <label>PT (Perímetro C/M):</label>
+                <input type="number" id="inputPT" value="75" placeholder="cm" oninput="calcularPesoCampo()">
+            </div>
+            <div class="input-group">
+                <label>Largo (C/M):</label>
+                <input type="number" id="inputLargo" value="80" placeholder="cm" oninput="calcularPesoCampo()">
+            </div>
         </div>
         
-        <div class="input-group">
-            <label>Peso por Saco (Kg):</label>
-            <input type="number" id="pesoSaco" value="40" min="1" oninput="calcular()">
+        <div class="card-weight" style="margin-top:0; margin-bottom:14px;">
+            <div class="result-row"><span>⚖️ Peso Estimado Cerdo:</span><span class="val-blue" id="pesoEstimadoResultado" style="font-size:18px;">0.00 Kg</span></div>
         </div>
 
-        <div class="card-result" style="border-left-color: #ef6c00; background-color: #fff8f1;">
-            <div class="result-row"><span>Alimento Disponible:</span><span class="val-orange" id="kilosBodega" style="color:#ef6c00;">0.00 Kg</span></div>
-            <div class="result-row"><span>Autonomía de Abasto:</span><span class="val-orange" id="diasAbasto" style="color:#ef6c00;">0 Días</span></div>
+        <div class="input-group">
+            <label>💉 Tratamiento / Medicación Porcina:</label>
+            <select id="selectMedicina" onchange="calcularPesoCampo()">
+                <option value="0" data-dose-rate="0">-- Solo registrar peso --</option>
+                <option value="Ivermectina Porcina (1%)" data-dose-rate="0.0303">Ivermectina 1% (1ml por 33kg)</option>
+                <option value="Oxitetraciclina L.A." data-dose-rate="0.1">Oxitetraciclina L.A. (1ml por 10kg)</option>
+                <option value="Enrofloxacina" data-dose-rate="0.05">Enrofloxacina (1ml por 20kg)</option>
+                <option value="Hierro Dextrano" data-dose-rate="0">Hierro Dextrano (Fijo 2ml por lechón)</option>
+                <option value="Complejo B" data-dose-rate="0.05">Complejo B (Vitamínico - 1ml por 20kg)</option>
+                <option value="Tilosina" data-dose-rate="0.1">Tilosina (Antibiótico - 1ml por 10kg)</option>
+            </select>
         </div>
-        <div id="alertaBodega" class="alert" style="display:none;">⚠️ ¡Inventario Crítico! Quedan menos de 3 días de alimento.</div>
+
+        <div class="card-purple">
+            <div class="result-row"><span>Dosis Calculada Requerida:</span><span class="val-purple" id="diasTratamiento">0.0 ml</span></div>
+        </div>
+
+        <button class="btn-action" style="background: var(--accent-blue); margin-top:14px;" onclick="guardarHistorialPorcino()">💾 Guardar en Historial</button>
+        
+        <label style="margin-top:16px;">📋 Registros de Campo Realizados:</label>
+        <div class="history-box" id="historialPorcino">
+            <div class="history-item" style="text-align:center; color:#94a3b8;">No hay registros grabados hoy.</div>
+        </div>
     </div>
 
-    <div id="costos" class="panel">
+    <div id="tab-costos" class="panel">
         <div class="input-group">
-            <label>Precio por Saco de Alimento ($):</label>
-            <input type="number" id="precioSaco" value="25" min="0" oninput="calcular()">
+            <label>Precio Unitario por Saco ($):</label>
+            <input type="number" id="precioSaco" value="25" min="0" oninput="calcularTodo()">
         </div>
-
         <div class="card-result" style="border-left-color: var(--accent-green); background-color: #f4fbf7;">
-            <div class="result-row"><span>Inversión Alimentaria Diaria:</span><span class="val-green" id="gastoDiario">$0.00</span></div>
-            <div class="result-row"><span>Proyección Mensual (30d):</span><span class="val-green" id="gastoMensual">$0.00</span></div>
+            <div class="result-row"><span>Costo Operativo Diario:</span><span class="val-green" id="gastoDiario">$0.00</span></div>
+            <div class="result-row"><span>Proyección Mensual Comercial:</span><span class="val-green" id="gastoMensual">$0.00</span></div>
         </div>
     </div>
 </div>
@@ -383,21 +344,21 @@
             errorTxt.style.display = "none";
             lockScreen.style.display = "none";
             mainApp.style.display = "block";
-            calcular();
+            calcularTodo();
         } else {
             errorTxt.style.display = "block";
         }
     }
 
-    function switchTab(element, tabId) {
+    function switchTab(element, panelId) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
         
         element.classList.add('active');
-        document.getElementById(tabId).classList.add('active');
+        document.getElementById(panelId).classList.add('active');
     }
 
-    function calcular() {
+    function calcularTodo() {
         let cerdos = parseFloat(document.getElementById('cerdos').value) || 0;
         let selectEtapa = document.getElementById('etapa');
         let consumoPorCerdo = parseFloat(selectEtapa.value) || 0;
@@ -438,6 +399,61 @@
 
         document.getElementById('gastoDiario').innerText = "$" + costoDiarioTotal.toFixed(2);
         document.getElementById('gastoMensual').innerText = "$" + costoMensualTotal.toFixed(2);
+        
+        calcularPesoCampo();
+    }
+
+    function calcularPesoCampo() {
+        let pt = parseFloat(document.getElementById('inputPT').value) || 0;
+        let largo = parseFloat(document.getElementById('inputLargo').value) || 0;
+        
+        // Fórmula balanceada porcina (PT^2 * Largo * 69.3 / 10000) adaptada a Kg comerciales
+        let pesoKg = (pt * pt * largo * 69.3) / 100000;
+        if(pt === 0 || largo === 0) pesoKg = 0;
+        
+        document.getElementById('pesoEstimadoResultado').innerText = pesoKg.toFixed(2) + " Kg";
+
+        let selectMed = document.getElementById('selectMedicina');
+        let medicina = selectMed.value;
+        let tasaDosis = parseFloat(selectMed.options[selectMed.selectedIndex].getAttribute('data-dose-rate')) || 0;
+        
+        let dosisTotal = 0;
+        if (medicina === "Hierro Dextrano") {
+            dosisTotal = pesoKg > 0 ? 2.0 : 0; // Fijo 2ml si el animal existe
+        } else {
+            dosisTotal = pesoKg * tasaDosis;
+        }
+
+        document.getElementById('diasTratamiento').innerText = dosisTotal.toFixed(1) + " ml";
+    }
+
+    let historialItems = [];
+    function guardarHistorialPorcino() {
+        let pt = document.getElementById('inputPT').value;
+        let largo = document.getElementById('inputLargo').value;
+        let pesoTxt = document.getElementById('pesoEstimadoResultado').innerText;
+        let medSelect = document.getElementById('selectMedicina');
+        let medicina = medSelect.value;
+        let dosisTxt = document.getElementById('diasTratamiento').innerText;
+
+        if(parseFloat(pesoTxt) === 0) return;
+
+        let ahora = new Date();
+        let horaTxt = ahora.getDate() + "/" + (ahora.getMonth()+1) + "/" + ahora.getFullYear() + " " + ahora.getHours() + ":" + (ahora.getMinutes()<10?'0':'') + ahora.getMinutes();
+
+        let detalleMedicina = medicina !== "0" ? ` | 💉 ${medicina}: ${dosisTxt}` : " | No requirió dosis";
+        let registroHTML = `<strong>🐖 ${pesoTxt}</strong> (PT: ${pt}cm, L: ${largo}cm)<br><small>📅 ${horaTxt}${detalleMedicina}</small>`;
+        
+        historialItems.unshift(registroHTML);
+
+        let box = document.getElementById('historialPorcino');
+        box.innerHTML = "";
+        historialItems.forEach(item => {
+            let div = document.createElement('div');
+            div.className = "history-item";
+            div.innerHTML = item;
+            box.appendChild(div);
+        });
     }
 </script>
 
