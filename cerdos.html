@@ -31,7 +31,76 @@
             min-height: 90vh;
         }
 
+        /* PANTALLA DE BLOQUEO */
+        #lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #efebe9 0%, #d7ccc8 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .lock-container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--bg-card);
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 16px 40px rgba(74, 50, 42, 0.2);
+            border: 1px solid #bcaaa4;
+            box-sizing: border-box;
+        }
+
+        .lock-container h3 {
+            margin: 0 0 10px 0;
+            color: var(--primary-dark);
+            font-size: 22px;
+        }
+
+        .lock-container p {
+            font-size: 14px;
+            color: var(--text-med);
+            margin-bottom: 24px;
+        }
+
+        .btn-access {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent-green);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 15px;
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .btn-access:hover {
+            background: #1b5e20;
+            transform: translateY(-1px);
+        }
+
+        .error-msg {
+            color: #b91c1c;
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        /* CONTENEDOR PRINCIPAL DE LA APP */
         .container {
+            display: none; /* Oculto por defecto hasta poner la clave */
             width: 100%;
             max-width: 440px;
             background: var(--bg-card);
@@ -40,6 +109,12 @@
             box-shadow: 0 16px 40px rgba(74, 50, 42, 0.15);
             border: 1px solid #bcaaa4;
             box-sizing: border-box;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         h2 {
@@ -96,12 +171,6 @@
         .panel {
             display: none;
             text-align: left;
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .panel.active {
@@ -174,9 +243,6 @@
             margin-top: 12px;
         }
 
-        .result-row:first-child { margin-top: 0; }
-        .result-row:last-child { margin-bottom: 0; }
-
         .val-orange { font-weight: 800; color: var(--accent-orange); font-size: 16px; }
         .val-blue { font-weight: 800; color: var(--accent-blue); font-size: 16px; }
         .val-green { font-weight: 800; color: var(--accent-green); font-size: 16px; }
@@ -197,7 +263,20 @@
 </head>
 <body>
 
-<div class="container">
+<div id="lock-screen">
+    <div class="lock-container">
+        <h3>🔑 Acceso Restringido</h3>
+        <p>Introduce tu clave de activación Premium para usar la calculadora de Control Porcino.</p>
+        <div class="input-group" style="text-align: left;">
+            <label>Clave de Licencia:</label>
+            <input type="password" id="appPassword" placeholder="Introduce la contraseña...">
+        </div>
+        <button class="btn-access" onclick="verificarClave()">Activar Aplicación</button>
+        <div id="errorTxt" class="error-msg">❌ Clave incorrecta. Solicita tu acceso comercial.</div>
+    </div>
+</div>
+
+<div class="container" id="mainApp">
     <h2>Control Porcino</h2>
     <span class="subtitle">Gestión Tecnificada de Alimento y Peso</span>
     
@@ -292,6 +371,24 @@
 </div>
 
 <script>
+    // 🔑 ESTA ES TU CONTRASEÑA MASTER COMERCIAL (Cámbiala aquí si quieres)
+    const CONTRASEÑA_CORRECTA = "PORCINO2026";
+
+    function verificarClave() {
+        let inputClave = document.getElementById('appPassword').value;
+        let errorTxt = document.getElementById('errorTxt');
+        let lockScreen = document.getElementById('lock-screen');
+        let mainApp = document.getElementById('mainApp');
+
+        if (inputClave === CONTRASEÑA_CORRECTA) {
+            lockScreen.style.display = "none"; // Oculta bloqueo
+            mainApp.style.display = "block";   // Muestra app
+            calcular();
+        } else {
+            errorTxt.style.display = "block";  // Muestra error
+        }
+    }
+
     function switchTab(tabId) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -302,7 +399,6 @@
 
     function calcular() {
         let cerdos = parseFloat(document.getElementById('cerdos').value) || 0;
-        
         let selectEtapa = document.getElementById('etapa');
         let consumoPorCerdo = parseFloat(selectEtapa.value) || 0;
         
@@ -313,19 +409,16 @@
         let pesoSaco = parseFloat(document.getElementById('pesoSaco').value) || 40;
         let precioSaco = parseFloat(document.getElementById('precioSaco').value) || 0;
 
-        // Operación de Raciones
         let consumoDiarioTotal = cerdos * consumoPorCerdo;
         let sacosDiariosReq = consumoDiarioTotal / pesoSaco;
 
         document.getElementById('consumoDiario').innerText = consumoDiarioTotal.toFixed(2) + " Kg";
         document.getElementById('sacosDiarios').innerText = sacosDiariosReq.toFixed(2) + " Sacos";
 
-        // Mapeo de Pesos Educativo e Informativo Semanal
         document.getElementById('pesoActualUnidad').innerText = pesoActualPorCerdo.toFixed(2) + " Kg";
         document.getElementById('pesoEsperadoUnidad').innerText = pesoEsperadoIndividualFinal.toFixed(2) + " Kg";
         document.getElementById('pesoEsperadoTotal').innerText = (cerdos * pesoEsperadoIndividualFinal).toFixed(2) + " Kg";
 
-        // Operación de Bodega
         let kilosTotalesBodega = sacosBodega * pesoSaco;
         let diasAutonomia = consumoDiarioTotal > 0 ? (kilosTotalesBodega / consumoDiarioTotal) : 0;
 
@@ -339,7 +432,6 @@
             alerta.style.display = "none";
         }
 
-        // Operación de Costos
         let costoPorKilo = precioSaco / pesoSaco;
         let costoDiarioTotal = consumoDiarioTotal * costoPorKilo;
         let costoMensualTotal = costoDiarioTotal * 30;
@@ -347,8 +439,6 @@
         document.getElementById('gastoDiario').innerText = "$" + costoDiarioTotal.toFixed(2);
         document.getElementById('gastoMensual').innerText = "$" + costoMensualTotal.toFixed(2);
     }
-
-    calcular();
 </script>
 
 </body>
